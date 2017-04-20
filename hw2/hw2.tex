@@ -1,0 +1,159 @@
+\documentclass[fleqn,a4paper,12pt]{article}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+
+
+
+\title{Machine Learning Technique Homework 2}
+\date{}
+
+\setcounter{section}{2}
+
+\usepackage{listings}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+
+\usepackage{mathspec}
+% \setmainfont{FreeSans}
+\setmathsfont(Digits,Latin,Greek)[Numbers={Lining,Proportional}]{Noto Serif CJK TC}
+\newfontfamily\ZhFont{Noto Serif CJK TC}
+\newfontfamily\SmallFont[Scale=0.8]{Droid Sans}
+% \newfontfamily\SmallSmallFont[Scale=0.7]{Noto Serif CJK}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{B03902072\ZhFont{江廷睿}}
+\lhead{Machine Learning Technique Homework 2}
+\rfoot{\thepage / \pageref{LastPage}}
+
+
+
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+
+\subsection*{1}
+
+$$F(A, B) = \frac{1}{N} \sum_{n=1}^N \ln(1 + \exp(- y_n (A z_n + B)))$$
+
+\begin{align*}
+\nabla F(A, B) =& \frac{1}{N} \sum_{n=1}^N \frac{1}{1 + \exp(-y_n(A z_n + B))} \nabla \exp(-y_n(A z_n + B)) \\
+=& \frac{1}{N} \sum_{n=1}^{N} \frac{\exp(-y_n(A z_n + B))}{1 + \exp(-y_n(A z_n + B))} \nabla (-y_n(A z_n + B)) \\
+=& \frac{1}{N} \sum_{n=1}^{N} p_n  \begin{bmatrix}-y_n z_n \\ -y_n\end{bmatrix} \\
+\end{align*}
+
+\subsection*{2}
+
+Let $s = -y_n (A z_n + B)$
+
+\begin{align*}
+ & \frac{\partial}{\partial A} \nabla F(A, B) \\
+=& \frac{1}{N} \sum_{n=1}^{N} \frac{\partial \theta(s)}{\partial s} \frac{\partial s}{\partial A} \begin{bmatrix}-y_n z_n \\ -y_n\end{bmatrix} \\
+=& \frac{1}{N} \sum_{n=1}^{N} \frac{\exp(s)}{(1 + \exp(s))^2} (- y_n z_n) \begin{bmatrix}-y_n z_n \\ -y_n\end{bmatrix} \\
+=& \frac{1}{N} \sum_{n=1}^{N} \frac{1}{2}(\frac{1 + 2\exp(s) + \exp(s)^2}{(1 + \exp(s))^2} - \frac{1 + \exp(s)^2}{(1 + \exp(s))^2} ) (- y_n z_n) \begin{bmatrix}-y_n z_n \\ -y_n\end{bmatrix} \\
+=& \frac{1}{N} \sum_{n=1}^{N} \frac{1}{2} (1 - (1 - p_n)^2 - p_n^2) (- y_n z_n) \begin{bmatrix}-y_n z_n \\ -y_n\end{bmatrix}
+\end{align*}
+
+Similarily
+
+\begin{align*}
+ & \frac{\partial}{\partial B} \nabla F(A, B) \\
+=& \frac{1}{N} \sum_{n=1}^{N} \frac{\partial \theta(s)}{\partial s} \frac{\partial s}{\partial B} \begin{bmatrix}-y_n z_n \\ -y_n\end{bmatrix} \\
+=& \frac{1}{N} \sum_{n=1}^{N} \frac{\exp(s)}{(1 + \exp(s))^2} (- y_n) \begin{bmatrix}-y_n z_n \\ -y_n\end{bmatrix} \\
+=& \frac{1}{N} \sum_{n=1}^{N} \frac{1}{2} (1 - (1 - p_n)^2 - p_n^2) (- y_n) \begin{bmatrix}-y_n z_n \\ -y_n\end{bmatrix}
+\end{align*}
+
+Combine the results above:
+
+$$H(F) = \frac{1}{N} \sum_{n=1}^{N} \frac{1}{2} (1 - (1 - p_n)^2 - p_n^2) y_n^2 \begin{bmatrix}z_n^2 & z_n \\ z_n & 1 \end{bmatrix}$$
+
+
+
+\subsection*{3}
+
+$$\lim_{\gamma \to \infty} \exp(-\gamma \lVert x - x' \rVert^2) = 0$$
+
+Thus the kernel matrix is an $N \times N$ all $0$ matrix, where $N$ is the number of data.
+
+Then the optimal $\beta$
+
+\begin{align*}
+\beta &= (\lambda I + K)^{-1} y \\
+      &= \frac{1}{\lambda} I y 
+\end{align*}
+
+
+\subsection*{4}
+
+$$\lim_{\gamma \to 0} \exp(-\gamma \lVert x - x' \rVert^2) = 1$$
+
+Thus the kernel matrix is an $N \times N$ all $1$ matrxi, where $N$ is the number of data.
+
+Then the optimal $\beta$
+
+\begin{align*}
+  \beta =& (\lambda I + K)^{-1} y \\
+\end{align*}
+
+Let $A = (\lambda I + K)^{-1}$ ($A$ must exist since $K$ is s.p.d.), then 
+
+\[A_{i,j}  = 
+\begin{cases}
+  - \frac{1}{\lambda (\lambda + N)} + \frac{1}{\lambda} & i = j \\
+  - \frac{1}{\lambda (\lambda + N)} & i \ne j
+\end{cases}
+\]
+
+Bellow is the proof. Let $B = A(\lambda I + K) = \lambda A + AK$ and $A_{i}, K_{j}$ denote the $i$-th row of matrix $A, K$ respectively. 
+
+
+\begin{align*}
+  B_{ij}
+  =& \lambda A_{ij} + A_{i} K_{j}^T \\
+  =& \lambda A_{ij} + \sum_{j=1}^N A_{ij} & \text{since $K$ is an all $1$ matrix.} \\
+  =& \lambda A_{ij} - N \frac{1}{\lambda(\lambda + N)} + \frac{1}{\lambda} \\
+  =& \lambda A_{ij} + \frac{- N + \lambda + N}{\lambda(\lambda + N)} \\
+  =& \lambda A_{ij} + \frac{\lambda}{\lambda(\lambda + N)}
+\end{align*}
+
+If $i = j$,
+
+\begin{align*}
+  &  \lambda A_{ij} + \frac{\lambda N + \lambda}{\lambda(\lambda + N)} \\
+  &= - \frac{\lambda}{\lambda(\lambda + N)} + 1 + \frac{\lambda}{\lambda(\lambda + N)} \\
+  &= 1
+\end{align*}
+
+
+If $i \ne j$,
+
+\begin{align*}
+  &  \lambda A_{ij} + \frac{\lambda N + \lambda}{\lambda(\lambda + N)} \\
+  &= - \frac{\lambda}{\lambda(\lambda + N)} + \frac{\lambda}{\lambda(\lambda + N)} \\
+  &= 0
+\end{align*}
+
+Thus $B = I$, and therefore $A = (\lambda I + K)^{-1}$, where
+
+
+\[A_{i,j}  = 
+\begin{cases}
+  - \frac{1}{\lambda (\lambda + N)} + \frac{1}{\lambda} & i = j \\
+  - \frac{1}{\lambda (\lambda + N)} & i \ne j
+\end{cases}
+\]
+
+
+So optimal $\beta$
+
+\begin{align*}
+  \beta
+  =& (\lambda I + K)^{-1} y \\
+  =& -\frac{1}{\lambda(\lambda + N)} \sum_i^N y_i \cdot e + \frac{1}{\lambda} y
+\end{align*}
+
+where $e$ is an all $1$ vector.
+
+\end{document}
