@@ -198,11 +198,105 @@ Consider the optimal $b, w, \xi^{\vee}, \xi^{\wedge}$ of original $P_2$:
 
 \end{itemize}
   
-Therefore, $P_1$ is equivalent to
+Therefore, $P_2$ is equivalent to
 
-$$\min_{b, w, \xi^{vee}, \xi^{\wedge}} \frac{1}{2} w^T w + C \sum_{i=1}^N (\max(0, |y_n - w^T \phi(x_n) - b| - \epsilon))^2$$
+$$\min_{b, w} \frac{1}{2} w^T w + C \sum_{i=1}^N (\max(0, |y_n - w^T \phi(x_n) - b| - \epsilon))^2$$
 
 \subsection*{6}
 
+
+Substitute $w$ with $\sum_{n=1}^N \beta_n z_n$, then 
+
+\begin{align*}
+  &  \min_{b, w} \frac{1}{2} w^T w + C \sum_{n=1}^N (\max(0, |y_n - w^T \phi(x_n) - b| - \epsilon))^2 \\
+  =& \min_{b, w} \frac{1}{2} \sum_{m=1}^N \sum_{n=1}^N \beta_n \beta_m K(x_n, x_m) + C \sum_{n=1}^N (\max(0, |y_n - (\sum_{m=1}^N \beta_m)^T \phi(x_n)  - b| - \epsilon))^2
+\end{align*}
+
+
+Then
+
+\begin{align*}
+  &  \frac{\partial F(b, \beta)}{\partial \beta_m} \\
+  =& \frac{1}{2} (\sum_{i=1, i \ne m}^N \beta_i K(x_i, x_m) + \sum_{j=1, j \ne m}^N \beta_j K(x_m, x_j) + 2 \beta_m K(x_m, x_m)) + \\
+  & C \sum_{i=1}^N \begin{cases}
+    0 & |y_n - (\sum_{m=1}^N \beta_m)^T \phi(x_n)  - b| - \epsilon < 0 \\
+    2(|y_n - (\sum_{m=1}^N \beta_m)^T \phi(x_n)  - b| - \epsilon) g_n \beta_m \phi(x_n) & \text{otherwise}
+  \end{cases} \\
+  =& \sum_{i=1}^N \beta_i K(x_i, x_m)  + \\
+  & C \sum_{i=1}^N \begin{cases}
+    0 & |y_n - (\sum_{m=1}^N \beta_m)^T \phi(x_n)  - b| - \epsilon < 0 \\
+    2(|y_n - (\sum_{m=1}^N \beta_m)^T \phi(x_n)  - b| - \epsilon) g_n \beta_m \phi(x_n) & \text{otherwise}
+  \end{cases}
+\end{align*}
+
+
+where $g_n = \mathrm{sgn}(y_n - (\sum_{m=1}^N \beta_m)^T phi(x_n)  - b)$.
+
+\subsection*{7}
+
+Let the two example generated at time $t$ be $(p_t, p_t^2), (q_t, q_t^2)$. Then the learned model will be
+
+\begin{align*}
+  g_t(x)
+  &= \frac{q_t^2 - p_t^2}{q_t - p_t} x - \frac{q_t^2 - p_t^2}{q_t - p_t} q_t + q_t^2 \\
+  &= (q_t + p_t) x - p_t q_t
+\end{align*}
+
+\begin{align*}
+  &  \bar{g}(x) \\
+  =& \lim_{T \to \infty} \frac{1}{T} \sum_{t=1}^T g_t(x) \\
+  =& E(q + p) x - E(p q)
+\end{align*}
+
+where
+
+\begin{align*}
+  E(p) = E(q)
+  =& \int_0^1 p \mathrm{d} p \\
+  =& \frac{1}{2}
+\end{align*}
+
+
+\begin{align*}
+  E(p q) 
+  =& \int_0^1 \int_0^1 p q \mathrm{d} p \mathrm{d} q\\
+  =& \frac{1}{4}
+\end{align*}
+
+Thus,
+
+\begin{align*}
+  &  \bar{g}(x) \\
+  =& E(q + p) x - E(p q) \\
+  =& x - \frac{1}{4} \\   
+\end{align*}
+
+\subsection*{8}
+
+We can get those $\tilde{y}_n$ one by one.
+
+First, query RMSE with a randomly generated hypothesis $h_0$.
+
+Then generate another hypothesis $h_1$ such that $h_0(\tilde{x}_1) \ne h_1(\tilde{x}_1)$ and $h_0(\tilde{x}_i) = h_1(\tilde{x}_i)$ for $i = 2, 3, \cdots, \tilde{N}$. So by querying twice RMSE, we can solve $\tilde{y}_1$ from
+
+\[
+\begin{cases}
+  \mathrm{RMSE}(h_1)^2 = \frac{1}{\tilde{N}} (\tilde{y}_1 - h_0(\tilde{x_1}))^2 + \sum_{n=1}^{\tilde{N}} (\tilde{y}_n - h_0(\tilde{x_n}))^2 \\
+  \mathrm{RMSE}(h_2)^2 = \frac{1}{\tilde{N}} (\tilde{y}_2 - h_1(\tilde{x_1}))^2 + \sum_{n=1}^{\tilde{N}} (\tilde{y}_n - h_0(\tilde{x_n}))^2 \\
+\end{cases}
+\]
+
+
+Similarly, we can generate $h_k(x_k) \ne h_0(x_k)$ and $h_0(\tilde{x}_i) = h_1(\tilde{x}_i)$ for $i = 1, \cdots k - 1, k + 1, \cdots \tilde{N}$ and solve $\tilde{y}_k$ iteratively for $k = 2$ to $k = \tilde{N} - 1$ with one query to RMSE from 
+
+\[
+\begin{cases}
+  \mathrm{RMSE}(h_0)^2 = \sum_{n=1}^{k-1} \frac{1}{\tilde{N}} (\tilde{y}_n - h_0(\tilde{x_n}))^2 + \frac{1}{\tilde{N}} (\tilde{y}_k - h_0(\tilde{x_k}))^2 + \sum_{n=k+1}^{\tilde{N}} (\tilde{y}_n - h_1(\tilde{x_n}))^2 \\
+  \mathrm{RMSE}(h_k)^2 = \sum_{n=1}^{k-1} \frac{1}{\tilde{N}} (\tilde{y}_n - h_0(\tilde{x_1}))^2  + \frac{1}{\tilde{N}} (\tilde{y}_k - h_k(\tilde{x_k}))^2 + \sum_{n=k+1}^{\tilde{N}} (\tilde{y}_n - h_1(\tilde{x_n}))^2 \\
+\end{cases}
+\]
+
+
+To solve $\tilde{y}_{\tilde{N}}$, since we have known $\tilde{y}_k$ for $k=1, 2, 3, \cdots, k - 1$ and known $\mathrm{RMSE}(h_0)$, thus no additional query is required. Therefore, totally $\tilde{N}$ queries are required.
 
 \end{document}
