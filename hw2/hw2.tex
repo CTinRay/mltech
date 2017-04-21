@@ -314,10 +314,31 @@ Since $\frac{1}{N} \sum_{n=1}^{\tilde{n}} (h(\tilde{x}_n))^2$ can be compute wit
 \[
   \begin{cases}
     \mathrm{RMSE}(h)^2 = \frac{1}{N} \sum_{n=1}^{\tilde{n}} \tilde{y}_n^2 + \frac{1}{N} \sum_{n=1}^{\tilde{n}} (h(\tilde{x}_n))^2  - \frac{2}{N} g^T \tilde{y}  \\
-    \mathrm{RMSE}(-h)^2 = \frac{1}{N} \sum_{n=1}^{\tilde{n}} \tilde{y}_n^2 + \frac{1}{N} \sum_{n=1}^{\tilde{n}} (h(\tilde{x}_n))^2  + \frac{2}{N} g^T \tilde{y}  \\
+    \mathrm{RMSE}(-h)^2 = \frac{1}{N} \sum_{n=1}^{\tilde{n}} \tilde{y}_n^2 + \frac{1}{N} \sum_{n=1}^{\tilde{n}} (h(\tilde{x}_n))^2  + \frac{2}{N} g^T \tilde{y}  
   \end{cases}
 \]
 
 Therefore, only 2 queries are required.
+
+\subsection*{10}
+
+\begin{align*}
+  &  \frac{\partial}{\partial \alpha} \tilde{N} \mathrm{RMSE}^2(\sum_{k=1}^K \alpha_k g_k) \\
+  =& \frac{\partial}{\partial \alpha}  \sum_{n=1}^{\tilde{N}}(\tilde{y}_n - \sum_{k=1}^K \alpha_k g_k(\tilde{x}_n))^2 \\
+  =& \frac{\partial}{\partial \alpha}  (\tilde{y} - g(\tilde{x}) \alpha)^T (\tilde{y} - g(\tilde{x}) \alpha) \\
+  =& 2 g(\tilde{x})^T (g(\tilde{x})\alpha - \tilde{y}) = 0 
+\end{align*}
+
+where $g(\tilde{x})$ is a $\tilde{N} \times K$ matrix and $g(\tilde{x})_{i,j} = g_j(\tilde{x_i})$. Then the optimal $\alpha$ is
+
+$$(g(\tilde{x})^T g(\tilde{x}))^{-1} g(\tilde{x})^T \tilde{y}$$
+
+Since we know all $\tilde{x}$, thus $(g(\tilde{x})^T g(\tilde{x}))^{-1} g(\tilde{x})^T$ can be calculated locally. And 
+
+$$
+  g(\tilde{x})^T \tilde{y} = \begin{bmatrix} g_1^T \tilde{y} \\ g_2^T \tilde{y} \\ \vdots \\ g_{\tilde{K}}^T \tilde{y}  \end{bmatrix}
+$$
+
+Each component can be calculated with two queries. Therefore, $2\tilde{K}$ queries are required.
 
 \end{document}
