@@ -299,4 +299,25 @@ Similarly, we can generate $h_k(x_k) \ne h_0(x_k)$ and $h_0(\tilde{x}_i) = h_1(\
 
 To solve $\tilde{y}_{\tilde{N}}$, since we have known $\tilde{y}_k$ for $k=1, 2, 3, \cdots, k - 1$ and known $\mathrm{RMSE}(h_0)$, thus no additional query is required. Therefore, totally $\tilde{N}$ queries are required.
 
+\subsection*{9}
+
+\begin{align*}
+  \mathrm{RMSE}(h)
+  =& \sqrt{\frac{1}{N} \sum_{n=1}^{\tilde{n}} (\tilde{y}_n - h(\tilde{x}_n))^2} \\
+  =& \sqrt{\frac{1}{N} \sum_{n=1}^{\tilde{n}} \tilde{y}_n^2 - 2 \tilde{y}_n h(\tilde{x}_n) + (h(\tilde{x}_n))^2} \\
+  =& \sqrt{\frac{1}{N} \sum_{n=1}^{\tilde{n}} \tilde{y}_n^2 + \frac{1}{N} \sum_{n=1}^{\tilde{n}} (h(\tilde{x}_n))^2  - \frac{2}{N} \sum_{n=1}^{\tilde{n}} \tilde{y}_n h(\tilde{x}_n) } \\
+  =& \sqrt{\frac{1}{N} \sum_{n=1}^{\tilde{n}} \tilde{y}_n^2 + \frac{1}{N} \sum_{n=1}^{\tilde{n}} (h(\tilde{x}_n))^2  - \frac{2}{N} g^T \tilde{y} }
+\end{align*}
+
+Since $\frac{1}{N} \sum_{n=1}^{\tilde{n}} (h(\tilde{x}_n))^2$ can be compute without knowing $\tilde{y}$, we can solve $g^T \tilde{y}$ from 
+
+\[
+  \begin{cases}
+    \mathrm{RMSE}(h)^2 = \frac{1}{N} \sum_{n=1}^{\tilde{n}} \tilde{y}_n^2 + \frac{1}{N} \sum_{n=1}^{\tilde{n}} (h(\tilde{x}_n))^2  - \frac{2}{N} g^T \tilde{y}  \\
+    \mathrm{RMSE}(-h)^2 = \frac{1}{N} \sum_{n=1}^{\tilde{n}} \tilde{y}_n^2 + \frac{1}{N} \sum_{n=1}^{\tilde{n}} (h(\tilde{x}_n))^2  + \frac{2}{N} g^T \tilde{y}  \\
+  \end{cases}
+\]
+
+Therefore, only 2 queries are required.
+
 \end{document}
