@@ -15,8 +15,8 @@
 
 
 \usepackage{mathspec}
-% \setmainfont{FreeSans}
-\setmathsfont(Digits,Latin,Greek)[Numbers={Lining,Proportional}]{Noto Serif CJK TC}
+\setmainfont{Noto Serif CJK TC}
+% \setmathsfont(Digits,Latin,Greek)[Numbers={Lining,Proportional}]{DejaVu Math TeX Gyre}
 \newfontfamily\ZhFont{Noto Serif CJK TC}
 \newfontfamily\SmallFont[Scale=0.8]{Droid Sans}
 % \newfontfamily\SmallSmallFont[Scale=0.7]{Noto Serif CJK}
@@ -155,5 +155,54 @@ So optimal $\beta$
 \end{align*}
 
 where $e$ is an all $1$ vector.
+
+
+\subsection*{5}
+
+Consider the optimal $b, w, \xi^{\vee}, \xi^{\wedge}$ of original $P_2$:
+
+\begin{itemize}
+\item
+  When $\max(0, |y_n - w^T \phi(x_n) - b| - \epsilon) = 0$
+
+  \begin{align*}
+    &\implies |y_n - w^T \phi(x_n) - b| \leq \epsilon \\
+    &\implies -\epsilon - \xi_n^{\vee} \leq y_n - w^T \phi(x_n) - b \leq \epsilon + \xi_n^{\wedge} \\
+  \end{align*}
+
+  for any $\xi^{\vee}, \xi^{\wedge} \geq 0$.
+
+  Thus to minimize $(\xi_n^{\wedge})^2 + (\xi_n^{\vee})^2$, the optimal $\xi_n^{\vee}, \xi_n^{\wedge} = 0$, so
+
+  $$(\xi_n^{\wedge})^2 + (\xi_n^{\vee})^2 = 0 = (\max(0, |y_n - w^T \phi(x_n) - b| - \epsilon))^2$$
+
+
+\item  
+  When $\max(0, |y_n - w^T \phi(x_n) - b| - \epsilon) = |y_n - w^T \phi(x_n) - b| - \epsilon$,
+
+  If $y_n - w^T \phi(x_n) - b \leq 0$,
+
+  $$-\epsilon - \xi_n^{\vee} \leq y_n - w^T \phi(x_n) - b \leq \epsilon + \xi_n^{\wedge}$$
+
+  for all $\xi_n^{\vee} \geq |y_n - w^T \phi(x_n) - b| - \epsilon, \xi_n^{\wedge} \geq 0$.
+
+  Thus to minimize $(\xi_n^{\wedge})^2 + (\xi_n^{\vee})^2$, the optimal $\xi_n^{\vee} = |y_n - w^T \phi(x_n) - b| - \epsilon$, $\xi_n^{\wedge} = 0$, so
+
+  $$(\xi_n^{\wedge})^2 + (\xi_n^{\vee})^2 = (|y_n - w^T \phi(x_n) - b| - \epsilon)^2 = (\max(0, |y_n - w^T \phi(x_n) - b| - \epsilon))^2$$
+
+  Similarly, if $y_n - w^T \phi(x_n) - b \geq 0$,
+
+  the optimal $\xi_n^{\vee} = 0$, $\xi_n^{\wedge} = |y_n - w^T \phi(x_n) - b| - \epsilon$, so
+
+  $$(\xi_n^{\wedge})^2 + (\xi_n^{\vee})^2 = (|y_n - w^T \phi(x_n) - b| - \epsilon)^2 = (\max(0, |y_n - w^T \phi(x_n) - b| - \epsilon))^2$$
+
+\end{itemize}
+  
+Therefore, $P_1$ is equivalent to
+
+$$\min_{b, w, \xi^{vee}, \xi^{\wedge}} \frac{1}{2} w^T w + C \sum_{i=1}^N (\max(0, |y_n - w^T \phi(x_n) - b| - \epsilon))^2$$
+
+\subsection*{6}
+
 
 \end{document}
