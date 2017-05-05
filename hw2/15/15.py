@@ -1,6 +1,8 @@
 import argparse
 import numpy as np
 import copy
+# from numba import jit
+import pdb
 
 
 class LSSVM:
@@ -8,29 +10,19 @@ class LSSVM:
     def __init__(self, gamma=0.125, l=1e-5):
         self.gamma = gamma
         self.l = l
-        self._kernel = self._rbf
-        pass
-
-    def _rbf(self, x1, x2, gamma):
-        return np.exp(-gamma * np.dot(x1 - x2, (x1 - x2).T))
 
     def fit(self, X, y):
-        K = self._kernel(X, X, self.gamma)
+        K = np.zeros([X.shape[0], X.shape[0]])
+        K = X @ X.T
         self.X = X
         inv = np.linalg.inv(self.l * np.identity(X.shape[0]) + K)
         self.beta = np.dot(inv, y)
 
     def predict(self, X):
-        y = np.zeros(X.shape[0])
-        for i in range(X.shape[0]):
-            h = 0
-            for j in range(self.X.shape[0]):
-                x1 = X[i].reshape(1, -1)
-                x2 = self.X[j].reshape(1, -1)
-                h += self.beta[j] * self._kernel(x1, x2, self.gamma)
-
-            y[i] = 1 if h > 0 else -1
-
+        # pdb.set_trace()
+        predict = np.sum(self.beta * (X @ self.X.T),
+                         axis=1)
+        y = np.where(predict > 0, 1, -1)
         return y
 
 
@@ -84,24 +76,24 @@ def main():
     args = parser.parse_args()
 
     raw_data = read_data(args.data)
+    zeros = np.ones([raw_data['x'].shape[0], 1])
+    raw_data['x'] = np.concatenate([zeros, raw_data['x']], axis=1)
     train = {'x': raw_data['x'][:400], 'y': raw_data['y'][:400]}
     test = {'x': raw_data['x'][400:], 'y': raw_data['y'][400:]}
+    
+    lambdas = [0.01, 0.1, 1, 10, 100]
 
-    gammas = [32, 2, 0.125]
-    lambdas = [0.001, 1, 1000]
+    for l in lambdas:
+        lssvm = LSSVM(l=l)
+        classifier = Bagging(base_estimator=lssvm, n_estimators=201)
+        classifier.fit(train['x'], train['y'])
+        train['y_'] = classifier.predict(train['x'])
 
-    for gamma in gammas:
-        for l in lambdas:
-            lssvm = LSSVM(gamma=gamma, l=l)
-            classifier = Bagging(base_estimator=lssvm, n_estimators=51)
-            classifier.fit(train['x'], train['y'])
-            train['y_'] = classifier.predict(train['x'])
+        print('lambda :', l)
+        print('E in: %f' % (1 - accuracy(train['y'], train['y_'])))
 
-            print('Gamma : ', gamma, 'lambda :', l)
-            print('E in: %f' % (1 - accuracy(train['y'], train['y_'])))
-
-            test['y_'] = classifier.predict(test['x'])
-            print('E out: %f' % (1 - accuracy(test['y'], test['y_'])))
+        test['y_'] = classifier.predict(test['x'])
+        print('E out: %f' % (1 - accuracy(test['y'], test['y_'])))
 
 
 if __name__ == '__main__':

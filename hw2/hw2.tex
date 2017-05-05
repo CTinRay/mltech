@@ -329,7 +329,7 @@ Therefore, only 2 queries are required.
   =& 2 g(\tilde{x})^T (g(\tilde{x})\alpha - \tilde{y}) = 0 
 \end{align*}
 
-where $g(\tilde{x})$ is a $\tilde{N} \times K$ matrix and $g(\tilde{x})_{i,j} = g_j(\tilde{x_i})$. Then the optimal $\alpha$ is
+where $g(\tilde{x})$ is a $\tilde{N} \times K$ matrix and $g(\tilde{x})_{i,j} = g_j(\tilde{x_i})$. Then the optimal $\alpha$ is 
 
 $$(g(\tilde{x})^T g(\tilde{x}))^{-1} g(\tilde{x})^T \tilde{y}$$
 
@@ -340,5 +340,87 @@ $$
 $$
 
 Each component can be calculated with two queries. Therefore, $2\tilde{K}$ queries are required.
+
+\subsection*{11}
+
+Following combinations result in minimal $E_{in} = 0$, $(\gamma = 32, \lambda = 0.001)$: $(\gamma = 32, \lambda = 1)$, $(\gamma = 32, \lambda = 1000)$, $(\gamma = 2, \lambda = 0.001)$, $(\gamma = 2, \lambda = 1)$, $(\gamma = 2, \lambda = 1000)$, $(\gamma = 0.125, \lambda = 0.001)$.
+
+\subsection*{12}
+
+The minimum $E_{out}(g) = 0.39$ and the combination is  $(\gamma = 0.125, \lambda = 1000)$,
+
+\subsection*{13}
+
+The minumum $E_{in} = 0$, and the combinations are $(\gamma = 32, \lambda = 0.001)$, $(\gamma = 2, \lambda = 0.001)$, $(\gamma = 0.125, \lambda = 0.001)$.
+
+\subsection*{14}
+
+The minumum $E_{out} = 0.285$, and the combinations is $(\gamma = 0.125, \lambda = 1)$.
+
+\subsection*{15}
+
+\subsection*{16}
+
+\subsection*{17}
+
+Let
+
+\begin{align*}
+  z_n = 
+  \begin{bmatrix}
+    g_1(x_n) \\
+    g_2(x_n) \\
+    \vdots \\
+    g_T(x_n)
+  \end{bmatrix}
+\end{align*}
+
+Then
+
+$$\min_{\alpha_t} \frac{1}{N} \sum_{n=1}^N \max(1 - y_n \sum_{t=1}^T \alpha_t g_t(x_n), 0)$$
+
+can be rewritten as
+
+$$\min_{\alpha_t} \frac{1}{N} \sum_{n=1}^N \max(1 - y_n w^T z_n, 0)$$
+
+where $w_n = \alpha_n$, for $n = 1, 2, \cdots, N$.
+
+Also,
+
+$$\min_{w} \sum_{n=1}^N \max(1 - y_n \sum_{t=1}^T \alpha_t g_t(x_n), 0)$$
+
+is equivalent to
+
+\begin{align*}
+  \min_{\xi, w} & \sum_{n=1}^N  \xi_n   \\
+  \text{subject to } & y_n (w^T x_n) \geq 1 - \xi_n
+\end{align*}
+
+Since when $1 - y_n \sum_{t=1}^T \alpha_t g_t(x_n) \geq 0$,
+
+\begin{align*}
+  &  \max(1 - y_n \sum_{t=1}^T \alpha_t g_t(x_n), 0) \\
+  =& 1 - y_n \sum_{t=1}^T \alpha_t g_t(x_n) \\
+  =& \min_{\xi_n} \xi_n  & \text{subject to } y_n (w^T x_n) \geq 1 - \xi_n, \xi_n > 0
+\end{align*}
+
+and when $1 - y_n \sum_{t=1}^T \alpha_t g_t(x_n) > 0$,
+
+\begin{align*}
+  &  \max(1 - y_n \sum_{t=1}^T \alpha_t g_t(x_n), 0) \\
+  =& 0 \\
+  =& \min_{\xi_n} \xi_n  & \text{subject to } y_n (w^T x_n) \geq 1 - \xi_n, \xi_n > 0
+\end{align*}
+
+As $C$ is much greater than $\frac{1}{2}$,
+
+\begin{align*}
+  \min_{\xi, w} \frac{1}{2} w^T w +  C \sum_{n=1}^N  \xi_n \approx \min_{\xi, w} C \sum_{n=1}^N  \xi_n  
+\end{align*}
+
+Therefore, we can approximate those optimal $\alpha$ by solving optimal $w$ with respect to those $z$ with LIBSVM.
+
+\subsection*{18}
+
 
 \end{document}
