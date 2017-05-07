@@ -1,7 +1,6 @@
 import argparse
 import numpy as np
 import copy
-# from numba import jit
 import pdb
 
 
@@ -12,18 +11,14 @@ class LSSVM:
         self.l = l
 
     def fit(self, X, y):
-        K = np.zeros([X.shape[0], X.shape[0]])
-        K = X @ X.T
-        self.X = X
-        inv = np.linalg.inv(self.l * np.identity(X.shape[0]) + K)
-        self.beta = np.dot(inv, y)
+        inv = np.linalg.inv(X.T @ X + self.l * np.identity(X.shape[1]))
+        self.w = inv @ X.T @ y.reshape(-1, 1)
 
     def predict(self, X):
-        # pdb.set_trace()
-        predict = np.sum(self.beta * (X @ self.X.T),
-                         axis=1)
+        predict = X @ self.w
         y = np.where(predict > 0, 1, -1)
-        return y
+        # pdb.set_trace()
+        return y.reshape(-1,)
 
 
 class Bagging:
@@ -34,7 +29,7 @@ class Bagging:
 
     def fit(self, X, y):
         self.estimators = []
-        
+
         # initialize estimators
         for i in range(self.n_estimators):
             self.estimators.append(copy.deepcopy(self.base_estimator))
@@ -50,8 +45,7 @@ class Bagging:
         for i in range(self.n_estimators):
             vote += self.estimators[i].predict(X)
 
-        ys = np.zeros(X.shape[0])
-        ys[np.where(vote >= 0)] = 1
+        ys = np.where(vote > 0, 1, -1)
         return ys
 
 
@@ -80,7 +74,7 @@ def main():
     raw_data['x'] = np.concatenate([zeros, raw_data['x']], axis=1)
     train = {'x': raw_data['x'][:400], 'y': raw_data['y'][:400]}
     test = {'x': raw_data['x'][400:], 'y': raw_data['y'][400:]}
-    
+
     lambdas = [0.01, 0.1, 1, 10, 100]
 
     for l in lambdas:
