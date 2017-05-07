@@ -1,6 +1,7 @@
 import argparse
 import numpy as np
-from sklearn.svm import SVC
+# from sklearn.svm import SVR
+import sklearn.svm
 
 
 class SVR:
@@ -12,11 +13,13 @@ class SVR:
         self.kernel = kernel
 
     def fit(self, X, y):
-        self.svc = SVC(C=self.c, kernel=self.kernel, gamma=self.gamma)
+        self.svc = sklearn.svm.SVR(C=self.c, kernel=self.kernel,
+                                   gamma=self.gamma, epsilon=self.epsilon)
         self.svc.fit(X, y)
 
     def predict(self, X):
-        return self.svc.predict(X)
+        predict = self.svc.predict(X)
+        return np.where(predict > 0, 1, -1)
 
 
 def read_data(filename):
