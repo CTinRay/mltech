@@ -428,5 +428,22 @@ Therefore, we can approximate those optimal $\alpha$ by solving optimal $w$ with
 
 \subsection*{18}
 
+Following the previous question, before we feed data into LIBSVM, we can append some artificial $z_{N + 1}, z_{N + 2}, \cdots, z_{N + T}$ after the original $z_1, z_2, \cdots, z_N$, where the $k$-th component of $z_{N + i}$ is
+
+\[
+  z_{N + i, k} = 
+  \begin{cases}
+    0 & i \neq k \\
+    1 & i = k
+  \end{cases}
+\]
+
+and $y_{N + 1} = y_{N + 2} = \cdots = y_{N+T} = 1$. So we have
+
+\begin{align*}
+  y_{N + i}(w^T z_{N + i}) =& w_i \geq 1 - \xi_{N + i}
+\end{align*}
+
+for $i = 1, 2, \cdots, T$, which gives penalty when $w_i < 1$.
 
 \end{document}
