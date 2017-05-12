@@ -1,0 +1,115 @@
+\documentclass[fleqn,a4paper,12pt]{article}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+
+
+
+\title{Machine Learning Technique Homework 3}
+\date{}
+
+\setcounter{section}{3}
+
+\usepackage{listings}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+
+\usepackage{mathspec}
+\setmainfont{Noto Serif CJK TC}
+% \setmathsfont(Digits,Latin,Greek)[Numbers={Lining,Proportional}]{DejaVu Math TeX Gyre}
+\newfontfamily\ZhFont{Noto Serif CJK TC}
+\newfontfamily\SmallFont[Scale=0.8]{Droid Sans}
+% \newfontfamily\SmallSmallFont[Scale=0.7]{Noto Serif CJK}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{B03902072\ZhFont{江廷睿}}
+\lhead{Machine Learning Technique Homework 3}
+\rfoot{\thepage / \pageref{LastPage}}
+
+
+
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+
+\section*{1}
+
+Let
+
+$$(\tilde{x}_n, \tilde{y}_n) = (\sqrt{u_n}y_n, \sqrt{u_n}x_n)$$
+
+then
+
+\begin{align*}
+  \min_{w} E^u_{\in}(w)
+  &= \frac{1}{N} \sum_{n=1}^N u_n(y_n - w^Tx_n)^2 \\
+  &= \frac{1}{N} \sum_{n=1}^N (\sqrt{u_n}y_n - w^T \sqrt{u_n} x_n)^2 \\
+  &= \frac{1}{N} \sum_{n=1}^N (\tilde{y}_n - w^T \tilde{x}_n)^2
+\end{align*}
+
+Thus they are equivalent.
+
+
+\section*{2}
+
+All positive examples are classified correctly in the first iteration, while all negative examples are classified incorrectly. And we know that the examples should be reweighted so that the weighted number of correct examples is equal to number of incorrect examples. Therefore,
+
+$$u^{(2)}_{+}  \text{number of positive example} =  u^{(2)}_{-} \text{number of negative example}$$
+\begin{align*}
+  u^{(2)}_{+} / u^{(2)}_{-}
+  =&   \text{number of negative example} / \text{number of positive example} \\
+  =& \frac{1}{99}
+\end{align*}
+
+
+\section*{3}
+
+For each dimension, consider $\theta$ between $(0, 1), (1, 2), (2, 3), \cdots, (5, 6)$ with $s = {+1, -1}$, totally $12$ different decision stumps. And there are two dimension; therefore, there are $24$ decision stumps.
+
+
+\section*{4}
+
+\begin{align*}
+  K_{ds}(x, x')
+  =& (\phi_{ds}(x))^T(\phi_{ds}(x')) \\
+  =& g_1(x)g_1(x') + g_2(x)g_2(x') + \cdots + g_{|\mathcal{G}|}(x)g_{|\mathcal{G}|}(x')
+\end{align*}
+
+Let $g_n(x) = s_n \cdot \mathrm{sign}(x_{i_n} - \theta_n)$
+
+\begin{align*}
+  g_n(x)g_n(x')
+  &= s_n \cdot \mathrm{sign}(x_{i_n} - \theta_n) s_n \cdot \mathrm{sign}(x'_{i_n} - \theta_n) \\
+  &= s_n^2 \cdot \mathrm{sign}(x_{i_n} - \theta_n) \mathrm{sign}(x'_{i_n} - \theta_n) \\  
+  &= \mathrm{sign}(x_{i_n} - \theta_n) \mathrm{sign}(x'_{i_n} - \theta_n) \\
+  &=\begin{cases}
+    1 & \mathrm{sign}(x_{i_n} - \theta_n) = \mathrm{sign}(x'_{i_n} - \theta_n) \\
+    -1 & \mathrm{sign}(x_{i_n} - \theta_n) \ne \mathrm{sign}(x'_{i_n} - \theta_n) \\
+  \end{cases}
+\end{align*}
+
+Therefore, 
+
+\begin{align*}
+  g_n(x)g_n(x')
+  =& (+1) \cdot |\{g | g(x) = g(x')\}| + (-1) \cdot |\{g | g(x) \ne g(x')\}| \\
+  =& (+1) \cdot (2(R - L + 1) - |x_1 - x_1'| - |x_2 - x_2'|) + \\
+    & (-1) \cdot (|x_1 - x_1'| + |x_2 - x_2'|)
+\end{align*}
+
+where the second equality is because $g_n(x) \ne g_n(x')$ only when $\theta_n$ is between $(x_i, x_i + 1), (x_i + 1, x_i + 2), \cdots, (x'_i - 1, x'_i)$, totally $|x'_i - x_i|$ decision stumps, and trivially, $|\{g | g(x) = g(x')\}| = |\text{decision stumps}| - |\{g | g(x) \ne g(x')\}|$.
+
+\section*{5}
+
+\begin{align*}
+  1 - \mu_+^2 - \mu_-^2
+  &= 1 - \mu_+^2 - (1 - \mu_+^2) \\
+  &= 1 - 2 \mu_+^2 + 2 \mu_+  - 1 \\
+  & -2 \mu_+^2 + 2 \mu_+
+\end{align*}
+
+it gets the maximum value $\frac{1}{2}$ when $\mu_+ = \mu_- = \frac{1}{2}$.
+
+\end{document}
