@@ -81,8 +81,8 @@ class AdaBoost:
             estimator = deepcopy(self.base_estimator)
             estimator.fit(X, y, weights)
             y_ = estimator.predict(X)
-            err = np.sum(y_ != y) / y.shape[0]
-            rescale = math.sqrt((1 - err) / err)
+            err = np.sum(weights[np.where(y_ != y)]) / y.shape[0]
+            rescale = math.sqrt((1 - err) / (err))
             weights[np.where(y == y_)] /= rescale
             weights[np.where(y != y_)] *= rescale
             self.estimator_weights.append(math.log(rescale))
@@ -121,7 +121,7 @@ def main():
     train = read_data(args.train)
     test = read_data(args.test)
 
-    classifier = AdaBoost(100)
+    classifier = AdaBoost(200)
     classifier.fit(train['x'], train['y'])
     train['y_'] = classifier.predict(train['x'])
     test['y_'] = classifier.predict(test['x'])
