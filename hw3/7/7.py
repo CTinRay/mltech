@@ -38,8 +38,8 @@ class DecisionStump:
             for i in range(n_data - 1):
                 ind1 = sorted_indices[f][i]
                 ind2 = sorted_indices[f][i + 1]
-                n_err_positive -= sample_weight[ind1] * y[ind1]
-                n_err_negative += sample_weight[ind1] * y[ind1]
+                n_err_positive += sample_weight[ind1] * y[ind1]
+                n_err_negative -= sample_weight[ind1] * y[ind1]
 
                 if n_err_positive < self.min_err or \
                    n_err_negative < self.min_err:
@@ -53,10 +53,16 @@ class DecisionStump:
                     elif n_err_negative < self.min_err:
                         self.sign = -1
                         self.min_err = n_err_negative
+        # pdb.set_trace()
 
     def predict(self, X):
-        y = np.where(self.sign * X[:, self.feature] >= self.threshold,
-                     1, -1)
+        if self.sign == 1:
+            y = np.where(X[:, self.feature] >= self.threshold,
+                         1, -1)
+        else:
+            y = np.where(X[:, self.feature] < self.threshold,
+                         1, -1)
+
         return y
 
 
@@ -75,7 +81,7 @@ class AdaBoost:
             estimator = deepcopy(self.base_estimator)
             estimator.fit(X, y, weights)
             y_ = estimator.predict(X)
-            err = np.sum(y_ == y) / y.shape[0]
+            err = np.sum(y_ != y) / y.shape[0]
             rescale = math.sqrt((1 - err) / err)
             weights[np.where(y == y_)] /= rescale
             weights[np.where(y != y_)] *= rescale
