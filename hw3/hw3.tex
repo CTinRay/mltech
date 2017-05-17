@@ -68,7 +68,6 @@ $$u^{(2)}_{+}  \text{number of positive example} =  u^{(2)}_{-} \text{number of 
 
 For each dimension, consider $\theta$ between $(0, 1), (1, 2), (2, 3), \cdots, (5, 6)$ with $s = {+1, -1}$, totally $12$ different decision stumps. And there are two dimension; therefore, there are $24$ decision stumps.
 
-
 \section*{4}
 
 \begin{align*}
@@ -111,5 +110,122 @@ where the second equality is because $g_n(x) \ne g_n(x')$ only when $\theta_n$ i
 \end{align*}
 
 it gets the maximum value $\frac{1}{2}$ when $\mu_+ = \mu_- = \frac{1}{2}$.
+
+\section*{6}
+
+The answer is \textbf{[e]}.\\
+
+Since $\max_{\mu_+, \mu_-} 1 - \mu_+^2 - \mu_-^2 = \frac{1}{2}$, it is normalized to
+
+\begin{equation*}
+  \tilde{f}_0(\mu_+, \mu_-) = 2(1 - \mu_+^2 - \mu_i^2) = 2(1 - \mu_+^2 - (1 - \mu_+)^2) = 4 \mu_+ - 4 \mu_+^2 
+\end{equation*}
+
+\subsection*{[a]}
+
+\begin{equation*}
+  \left. \min(\mu_+, \mu_-) \right|_{\mu+=\frac{1}{4}, \mu_-=\frac{1}{4}} = \frac{1}{4} \ne \frac{3}{4} = \tilde{f}_0(\frac{1}{4}, \frac{3}{4})
+\end{equation*}
+
+thus not [a].
+
+\subsection*{[b]}
+
+Let
+
+\begin{equation*}
+  f_b(\mu_+, \mu_-) = \mu_+(1 - (\mu_+ - \mu_-))^2 + \mu_-(-1 - (\mu_+ - \mu_-))^2
+\end{equation*}
+
+\begin{align*}
+  &  \frac{\partial}{\partial \mu_+} \mu_+(1 - (\mu_+ - \mu_-))^2 + \mu_-(-1 - (\mu_+ - \mu_-))^2 \\
+  =& \frac{\partial}{\partial \mu_+} \mu_+(1 - (\mu_+ - (1 - \mu_+)))^2 + (1 - \mu_+)(-1 - (\mu_+ - (1 - \mu_+)))^2 \\
+  =& \frac{\partial}{\partial \mu_+}  4 \mu_+^2 (1 - \mu_+) \\  
+  =& 4 (2\mu_+(1 - \mu_+) - \mu_+^2 ) \\
+  =& 4 (2\mu_+ - 3 \mu_+^2 ) = 0 \text{ when $\mu_+ = \frac{2}{3}$ or  $\mu_+ = 0$.}
+\end{align*}
+
+Since $f_b(0, 1) = f_b(1, 0) = 0 < f_b(\frac{2}{3}, \frac{1}{3}) = \frac{16}{27}$,
+
+\begin{equation*}
+  \arg \max f_b(\mu_+, \mu_-) = (\frac{2}{3}, \frac{1}{3})
+\end{equation*}
+
+Thus the normalized $f_b$ is
+
+\begin{equation*}
+  \tilde{f}_b(\mu_+, \mu_-) = \frac{27}{16} (\mu_+(1 - (\mu_+ - \mu_-))^2 + \mu_-(-1 - (\mu_+ - \mu_-))^2)
+\end{equation*}
+
+But
+
+\begin{equation*}
+  \tilde{f}_b(\frac{1}{2}, \frac{1}{2}) = \frac{27}{32} \ne 1 = \tilde{f}_0(\frac{1}{2}, \frac{1}{2})
+\end{equation*}
+
+thus not [b].
+
+\subsection*{[c]}
+
+Let
+
+\begin{align*}
+  f_c(\mu_+, \mu_-) =
+  &  - \mu_+ \ln \mu_+ - \mu_- \ln \mu_- \\
+  =& - \mu_+ \ln \mu_+ - (1 - \mu_+) \ln (1 - \mu_+) \\
+\end{align*}
+
+\begin{align*}
+  &\frac{\partial}{\partial \mu_+} f_c(\mu_+, \mu_-) \\
+  &=  - \ln \mu_+ - 1 +  \ln (1 - \mu_+) + 1 = 0 \text{ when $\mu_+ = \frac{1}{2}$.}
+\end{align*}
+
+Thus
+
+\begin{equation*}
+  \max f_c(\mu_+, \mu_-) = \ln 2
+\end{equation*}
+
+and the normalized $f_c$ is
+
+\begin{equation*}
+  \tilde{f}_c(\mu_+, \mu_-) = - \mu_+ \log_2 \mu_+ - \mu_- \log_2 \mu_- \\  
+\end{equation*}
+
+But 
+
+\begin{align*}
+  \tilde{f}_c(\frac{3}{4}, \frac{1}{4})
+  &= - \frac{3}{4} \log_2 \frac{3}{4} - \frac{1}{4} \log_2 \frac{1}{4} \\
+  &= 2 -\frac{3}{4} \log_2 3 \ne \frac{3}{4} = \tilde{f_0}(\frac{3}{4}, \frac{1}{4})
+\end{align*}
+
+thus not [c].
+
+\subsection*{[d]}
+
+Let 
+
+\begin{equation*}
+  f_d(\mu_+, \mu_-) = 1 - |\mu_+ - \mu_-|
+\end{equation*}
+
+\begin{equation*}
+  \max f_d(\mu_+, \mu_-) = 1
+\end{equation*}
+
+thus nromalized $f_d$ is 
+
+\begin{equation*}
+  \tilde{f}_d(\mu_+, \mu_-) = f_d(\mu_+, \mu_-) = 1 - |\mu_+ - \mu_-|
+\end{equation*}
+
+But 
+
+\begin{equation*}
+  \tilde{f}_d(\frac{3}{4}, \frac{1}{4}) = \frac{1}{2} \ne \frac{3}{4} = \tilde{f}_0
+\end{equation*}
+
+Thus not [d].
 
 \end{document}
