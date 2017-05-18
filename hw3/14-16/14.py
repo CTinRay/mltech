@@ -18,8 +18,6 @@ def main():
     train = read_data(args.train)
     test = read_data(args.test)
 
-    # classifier = DecisionTreeClassifier()
-    # classifier.fit(train['x'], train['y'])
     classifier = DecisionTree()
     classifier.fit(train['x'], train['y'], test)
     train['y_'] = classifier.predict(train['x'])
@@ -28,9 +26,8 @@ def main():
     print('Train Accuracy =', accuracy(train['y'], train['y_']))
     print('Test Accuracy =', accuracy(test['y'], test['y_']))
 
-    # tree.export_graphviz(classifier, out_file=args.plot)
-
     classifier.plot(args.plot)
+
 
 if __name__ == '__main__':
     try:
