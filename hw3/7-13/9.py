@@ -12,6 +12,8 @@ def main():
     parser = argparse.ArgumentParser(description='MLT HW3 7')
     parser.add_argument('train', type=str, help='train.csv')
     parser.add_argument('test', type=str, help='train.csv')
+    parser.add_argument('--plot', type=str,
+                        help='ada-ein.png', default='ada-ein.png')
     args = parser.parse_args()
 
     train = read_data(args.train)
@@ -25,19 +27,14 @@ def main():
     print('Train Accuracy =', accuracy(train['y'], train['y_']))
     print('Test Accuracy =', accuracy(test['y'], test['y_']))
 
-    ein_g = []
-    for i in range(classifier.n_estimators):
-        y_ = classifier.estimators[i].predict(train['x'])
-        ein_g.append(1 - accuracy(y_, train['y']))
-
-    print('ein g1 =', ein_g[0],
-          'alpha 1 =', classifier.estimator_weights[0])
-
     plt.figure(1)
     plt.xlabel('$t$', fontsize=18)
-    plt.ylabel('$E_{in}(G_t)$', fontsize=16)
-    plt.plot(np.arange(len(ein_g)), ein_g)
-    plt.savefig('ada-ein-g.png', dpi=300)
+    plt.ylabel('Error', fontsize=16)
+    plt.plot(np.arange(len(classifier.err_train)),
+             classifier.err_train,
+             label='train')
+    plt.savefig(args.plot, dpi=300)
+
 
 
 if __name__ == '__main__':
