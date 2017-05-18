@@ -6,6 +6,9 @@ import math
 from math import inf
 from copy import deepcopy
 import argparse
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+import matplotlib.pyplot as plt
 
 
 class DecisionStump:
@@ -33,8 +36,8 @@ class DecisionStump:
         self.min_err = min(n_positive, n_negative)
 
         for f in range(n_features):
-            n_err_positive = n_positive
-            n_err_negative = n_negative
+            n_err_positive = n_negative
+            n_err_negative = n_positive
             for i in range(n_data - 1):
                 ind1 = sorted_indices[f][i]
                 ind2 = sorted_indices[f][i + 1]
@@ -73,24 +76,32 @@ class AdaBoost:
         self.n_estimators = n_estimators
         self.base_estimator = base_estimator
 
-    def fit(self, X, y):
+    def fit(self, X, y, valid=None):
         self.estimators = []
         self.estimator_weights = []
+        self.err_train = []
+        self.err_valid = []
         weights = np.ones(y.shape)
         for i in range(self.n_estimators):
             estimator = deepcopy(self.base_estimator)
             estimator.fit(X, y, weights)
             y_ = estimator.predict(X)
-            err = np.sum(weights[np.where(y_ != y)]) / y.shape[0]
-            rescale = math.sqrt((1 - err) / (err))
+            err = np.sum(weights[np.where(y_ != y)]) / np.sum(weights)
+            rescale = math.sqrt((1 - err) / (err + sys.float_info.epsilon))
             weights[np.where(y == y_)] /= rescale
             weights[np.where(y != y_)] *= rescale
             self.estimator_weights.append(math.log(rescale))
             self.estimators.append(estimator)
 
+            if valid is not None:
+                y_train = self.predict(X)
+                self.err_train.append(1 - accuracy(y_train, y))
+                y_valid = self.predict(valid['x'])
+                self.err_valid.append(1 - accuracy(y_valid, valid['y']))
+
     def predict(self, X):
         y = np.zeros(X.shape[0])
-        for i in range(self.n_estimators):
+        for i in range(len(self.estimators)):
             y += self.estimator_weights[i] * self.estimators[i].predict(X)
 
         y = np.where(y >= 0, 1, -1)
@@ -116,18 +127,37 @@ def main():
     parser = argparse.ArgumentParser(description='MLT HW3 7')
     parser.add_argument('train', type=str, help='train.csv')
     parser.add_argument('test', type=str, help='train.csv')
+    parser.add_argument('--plot', type=str, help='error.png',
+                        default='error.png')
     args = parser.parse_args()
 
     train = read_data(args.train)
     test = read_data(args.test)
 
-    classifier = AdaBoost(200)
-    classifier.fit(train['x'], train['y'])
+    # classifier = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),
+    #                                 algorithm="SAMME",
+    #                                 n_estimators=300)
+    # classifier.fit(train['x'], train['y'])
+    classifier = AdaBoost(300)
+    classifier.fit(train['x'], train['y'], test)
     train['y_'] = classifier.predict(train['x'])
     test['y_'] = classifier.predict(test['x'])
 
     print('Train Accuracy =', accuracy(train['y'], train['y_']))
     print('Test Accuracy =', accuracy(test['y'], test['y_']))
+
+    # plot accuracy
+    plt.figure(1)
+    plt.xlabel('iterations', fontsize=18)
+    plt.ylabel('Error', fontsize=16)
+    plt.plot(np.arange(len(classifier.err_train)),
+             classifier.err_train,
+             label='train')
+    plt.plot(np.arange(len(classifier.err_valid)),
+             classifier.err_valid,
+             label='valid')
+    plt.legend()
+    plt.savefig(args.plot, dpi=300)
 
 
 if __name__ == '__main__':
