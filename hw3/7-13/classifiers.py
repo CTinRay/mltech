@@ -76,6 +76,7 @@ class AdaBoost:
         self.estimator_weights = []
         self.err_train = []
         self.err_valid = []
+        self.sample_weight_sum = []
         weights = np.ones(y.shape)
         for i in range(self.n_estimators):
             estimator = deepcopy(self.base_estimator)
@@ -87,6 +88,7 @@ class AdaBoost:
             weights[np.where(y != y_)] *= rescale
             self.estimator_weights.append(math.log(rescale))
             self.estimators.append(estimator)
+            self.sample_weight_sum.append(np.sum(weights))
 
             if valid is not None:
                 y_train = self.predict(X)
