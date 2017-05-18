@@ -23,8 +23,8 @@ def main():
     train['y_'] = classifier.predict(train['x'])
     test['y_'] = classifier.predict(test['x'])
 
-    print('Train Accuracy =', accuracy(train['y'], train['y_']))
-    print('Test Accuracy =', accuracy(test['y'], test['y_']))
+    print('Train Error =', 1 - accuracy(train['y'], train['y_']))
+    print('Test Error =', 1 - accuracy(test['y'], test['y_']))
 
     classifier.plot(args.plot)
 
