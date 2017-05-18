@@ -43,6 +43,7 @@ def prune_leaves(tree, train, test):
 
     find_and_prune(tree.root)
 
+
 def main():
     parser = argparse.ArgumentParser(description='MLT HW3 7')
     parser.add_argument('train', type=str, help='train.csv')
