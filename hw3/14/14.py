@@ -21,7 +21,9 @@ class DecisionStump:
             mu_n = n_negative / total
             return 1 - mu_p ** 2 - mu_n ** 2
 
-        return gini_sub(np_left, nn_left) + gini_sub(np_right, nn_right)
+        loss_left = (np_left + nn_left) * gini_sub(np_left, nn_left)
+        loss_right = (np_right + nn_right) * gini_sub(np_right, nn_right)
+        return loss_left + loss_right
 
     def __init__(self):
         self.loss = self._gini
@@ -91,6 +93,7 @@ class DecisionTree:
         node = {}
         node['classifier'] = deepcopy(self.base_estimator)
         node['classifier'].fit(X, y)
+        node['n_sample'] = X.shape[0]
         y_ = node['classifier'].predict(X)
         left_inds = np.where(y_ == -1)
         right_inds = np.where(y_ == 1)
@@ -129,35 +132,36 @@ class DecisionTree:
         def plot_node(f, node, start):
             clf = node['classifier']
             if clf.sign == +1:
-                f.write('%d [label="X[%d] >= %f"] ;\n'
-                        % (start, clf.feature, clf.threshold))
+                f.write('%d [label="X[%d] >= %f"] ;\n' %
+                        (start, clf.feature, clf.threshold))
             else:
-                f.write('%d [label="X[%d] >= %f"] ;\n'
-                        % (start, clf.feature, clf.threshold))
+                f.write('%d [label="X[%d] >= %f"] ;\n' %
+                        (start, clf.feature, clf.threshold))
 
             parent = start
             child = start + 1
             if node['l'] is not None:
                 start = plot_node(f, node['l'], child)
             else:
-                f.write('%d [label="+1"] ;\n' % child)
+                f.write('%d [label="-1"] ;\n' % child)
                 start += 1
-                
+
             f.write('%d -> %d ;\n' % (parent, child))
 
             child = start + 1
             if node['r'] is not None:
                 start = plot_node(f, node['r'], child)
             else:
-                f.write('%d [label="-1"] ;\n' % child)
+                f.write('%d [label="+1"] ;\n' % child)
                 start += 1
-                
+
             f.write('%d -> %d ;\n' % (parent, child))
 
             return start + 1
 
         with open(filename, 'w') as f:
             f.write('digraph Tree {\n')
+            f.write('node [shape=box] ;')
             plot_node(f, self.root, 1)
             f.write('}')
 
@@ -197,6 +201,8 @@ def main():
 
     print('Train Accuracy =', accuracy(train['y'], train['y_']))
     print('Test Accuracy =', accuracy(test['y'], test['y_']))
+
+    # tree.export_graphviz(classifier, out_file=args.plot)
 
     classifier.plot(args.plot)
 
