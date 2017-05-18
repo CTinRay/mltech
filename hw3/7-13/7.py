@@ -1,0 +1,51 @@
+import numpy as np
+import pdb
+import sys
+import traceback
+import argparse
+import matplotlib.pyplot as plt
+from classifiers import AdaBoost
+from utils import read_data, accuracy
+
+
+def main():
+    parser = argparse.ArgumentParser(description='MLT HW3 7')
+    parser.add_argument('train', type=str, help='train.csv')
+    parser.add_argument('test', type=str, help='train.csv')
+    args = parser.parse_args()
+
+    train = read_data(args.train)
+    test = read_data(args.test)
+
+    classifier = AdaBoost(300)
+    classifier.fit(train['x'], train['y'], test)
+    train['y_'] = classifier.predict(train['x'])
+    test['y_'] = classifier.predict(test['x'])
+
+    print('Train Accuracy =', accuracy(train['y'], train['y_']))
+    print('Test Accuracy =', accuracy(test['y'], test['y_']))
+
+    plt.figure(1)
+    plt.xlabel('Iterations', fontsize=18)
+    plt.ylabel('Error', fontsize=16)
+    plt.plot(np.arange(len(classifier.err_train)),
+             classifier.err_train,
+             label='train')
+    plt.savefig('ada-train.png', dpi=300)
+
+    plt.figure(2)
+    plt.xlabel('Iterations', fontsize=18)
+    plt.ylabel('Error', fontsize=16)
+    plt.plot(np.arange(len(classifier.err_valid)),
+             classifier.err_valid,
+             label='test')
+    plt.savefig('ada-test.png', dpi=300)
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except:
+        type, value, tb = sys.exc_info()
+        traceback.print_exc()
+        pdb.post_mortem(tb)
