@@ -13,6 +13,11 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+
 
 \usepackage{mathspec}
 \setmainfont{Noto Serif CJK TC}
@@ -227,5 +232,75 @@ But
 \end{equation*}
 
 Thus not [d].
+
+\section*{7}
+
+$E_{in}(g_t) = 0.24$, $\alpha_1 = 0.5763397549691922$
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{ada-ein-g.png}
+\caption{$t$ versus $E_{in}(g_t)$}
+\label{fig:ada-ein-g}
+\end{figure}
+
+\section*{8}
+
+It is neither increasing nor decreasing. In just oscillates severely. The reason may be the changing of sample weights during the training process.
+
+\section*{9}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{ada-ein.png}
+\caption{$t$ versus $E_{in}(G_t)$}
+\label{fig:ada-ein-train}
+\end{figure}
+
+
+\section*{10}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{ada-ut.png}
+\caption{$t$ versus $U_t$}
+\label{fig:ada-ut}
+\end{figure}
+
+$U_2 = 65.450396, U_T = 0.540149$.
+
+\section*{11}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{ada-epsilon.png}
+\caption{$t$ versus $\epsilon_t$}
+\label{fig:ada-ut}
+\end{figure}
+
+The minimum $\epsilon = 0.178728070175$
+
+
+\section*{12}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{ada-eout-g.png}
+\caption{$t$ versus $E_{out}(g_t)$}
+\label{fig:ada-eout-g}
+\end{figure}
+
+$E_{out}(G_1) = 0.29$
+
+\section*{13}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{ada-eout.png}
+\caption{$t$ versus $E_{out}(G_t)$}
+\label{fig:ada-eout}
+\end{figure}
+
+$E_{out}(G) = 0.132$
 
 \end{document}
