@@ -9,6 +9,7 @@ import argparse
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
 import matplotlib.pyplot as plt
+from sklearn import tree
 
 
 class DecisionStump:
@@ -74,7 +75,7 @@ class DecisionStump:
             y = np.where(X[:, self.feature] >= self.threshold,
                          1, -1)
         else:
-            y = np.where(X[:, self.feature] < self.threshold,
+            y = np.where(X[:, self.feature] <= self.threshold,
                          1, -1)
 
         return y
@@ -124,6 +125,42 @@ class DecisionTree:
 
         return y
 
+    def plot(self, filename):
+        def plot_node(f, node, start):
+            clf = node['classifier']
+            if clf.sign == +1:
+                f.write('%d [label="X[%d] >= %f"] ;\n'
+                        % (start, clf.feature, clf.threshold))
+            else:
+                f.write('%d [label="X[%d] >= %f"] ;\n'
+                        % (start, clf.feature, clf.threshold))
+
+            parent = start
+            child = start + 1
+            if node['l'] is not None:
+                start = plot_node(f, node['l'], child)
+            else:
+                f.write('%d [label="+1"] ;\n' % child)
+                start += 1
+                
+            f.write('%d -> %d ;\n' % (parent, child))
+
+            child = start + 1
+            if node['r'] is not None:
+                start = plot_node(f, node['r'], child)
+            else:
+                f.write('%d [label="-1"] ;\n' % child)
+                start += 1
+                
+            f.write('%d -> %d ;\n' % (parent, child))
+
+            return start + 1
+
+        with open(filename, 'w') as f:
+            f.write('digraph Tree {\n')
+            plot_node(f, self.root, 1)
+            f.write('}')
+
 
 def read_data(filename):
     x = []
@@ -145,15 +182,13 @@ def main():
     parser.add_argument('train', type=str, help='train.csv')
     parser.add_argument('test', type=str, help='train.csv')
     parser.add_argument('--plot', type=str, help='error.png',
-                        default='error.png')
+                        default='tree.dot')
     args = parser.parse_args()
 
     train = read_data(args.train)
     test = read_data(args.test)
 
-    # classifier = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),
-    #                                 algorithm="SAMME",
-    #                                 n_estimators=300)
+    # classifier = DecisionTreeClassifier()
     # classifier.fit(train['x'], train['y'])
     classifier = DecisionTree()
     classifier.fit(train['x'], train['y'], test)
@@ -163,8 +198,7 @@ def main():
     print('Train Accuracy =', accuracy(train['y'], train['y_']))
     print('Test Accuracy =', accuracy(test['y'], test['y_']))
 
-    # plot accuracy
-
+    classifier.plot(args.plot)
 
 if __name__ == '__main__':
     try:
