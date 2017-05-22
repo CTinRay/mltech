@@ -322,5 +322,34 @@ $E_{in} = 0.0, E_{out} = 0.126$.
 
 Purining three leaves results in same lowest $E_{in} = 0.01$, while the corresponding $E_{out} = 0.144, E_{out} = 0.117, E_{out} = 0.109$.
 
+\section*{17}
+
+\begin{align*}
+  U_{t+1}
+  =& \sum_{i=1}^N u_i^{(t + 1)} \\
+  =& \sum_{i=1}^N
+     \begin{cases}
+       u_i^{(t)} \cdot \sqrt{\frac{1 - \epsilon_t}{\epsilon_t}} & g_t(x_i) \ne y_i\\
+       u_i^{(t)} / \sqrt{\frac{1 - \epsilon_t}{\epsilon_t}} & g_t(x_i) = y_i\\
+     \end{cases}
+  \\
+  =& \sqrt{\frac{1 - \epsilon_t}{\epsilon_t}} \sum_{\{i | g_t(x_i) \ne y_i \}} u_i^{(t)} +
+     \sqrt{\frac{\epsilon_t}{1 - \epsilon_t}} \sum_{\{i | g_t(x_i) = y_i \}} u_i^{(t)} \\
+  =& \sqrt{\frac{1 - \epsilon_t}{\epsilon_t}} \cdot \epsilon_t U_t +
+     \sqrt{\frac{\epsilon_t}{1 - \epsilon_t}} \cdot (1 - \epsilon) U_t \\
+  =& U_t \cdot 2 \sqrt{\epsilon_t (1 - \epsilon_t )} \\
+  \leq& U_t \cdot 2 \sqrt{\epsilon(1 - \epsilon)}
+\end{align*}
+
+The last $\leq$ is because
+
+\begin{align*}
+  &  \epsilon(1 - \epsilon) - \epsilon_t (1 - \epsilon_t ) \\
+  =& \epsilon - \epsilon^2 - \epsilon_t + \epsilon_t^2 \\
+  =& (\epsilon_t + \epsilon)(\epsilon_t - \epsilon) + \epsilon - \epsilon_t \\
+  =& (\epsilon_t + \epsilon - 1)(\epsilon_t - \epsilon) \geq 0
+   & \because \epsilon_t + \epsilon \leq 1; \epsilon_t \leq \epsilon\\
+  \implies& \epsilon_t(1 - \epsilon_t) \leq \epsilon (1 - \epsilon )
+\end{align*}
 
 \end{document}
