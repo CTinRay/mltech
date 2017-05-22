@@ -352,4 +352,25 @@ The last $\leq$ is because
   \implies& \epsilon_t(1 - \epsilon_t) \leq \epsilon (1 - \epsilon )
 \end{align*}
 
+\section*{18}
+
+\begin{align*}
+  E_{in}(G_{t+2}) \leq U_{t+1}
+  =& U_t \cdot 2 \sqrt{\epsilon_t(1 - \epsilon_t)} \\
+  \leq& U_t \cdot 2 \sqrt{\epsilon(1 - \epsilon)} \\
+  \leq& U_t \exp(-2 (\frac{1}{2} - \epsilon)^2 )
+\end{align*}
+
+Since $\exp(-2 (\frac{1}{2} - \epsilon)^2 ) > 1$, after $T = \lceil \log{2N} / \log{\exp(-2 (\frac{1}{2} - \epsilon)^2 )} \rceil$ iterations,
+
+\begin{align*}
+  E_{in}(G_{T - 1}) \leq U_{T} 
+  \leq& \exp(-2 (\frac{1}{2} - \epsilon)^2 )^{-T} U_1 \\
+  \leq& \frac{1}{2N} U_1 \\
+  \leq& \frac{1}{2N} \\
+  =& 0 & \because \text{ $E_{in} \in \{ 0, \frac{1}{N}, \frac{2}{N}, \cdots, 1$ \}}
+\end{align*}
+
+Therefore, after $T = O(\log(N))$ iterations, $E_{in}(G_T) = 0$.
+
 \end{document}
