@@ -128,7 +128,7 @@ class DecisionTree:
                 f.write('%d [label="X[%d] >= %f"] ;\n' %
                         (start, clf.feature, clf.threshold))
             else:
-                f.write('%d [label="X[%d] >= %f"] ;\n' %
+                f.write('%d [label="X[%d] <= %f"] ;\n' %
                         (start, clf.feature, clf.threshold))
 
             parent = start
