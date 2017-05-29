@@ -141,9 +141,11 @@ where $p \in P$ and
 
 So for $x \in W_p$, $x$ is predicted incorrectly by $\frac{K + 1}{2}$ hypothesises $g$s, and thus predicted incorrectly by $G$. Therefore,
 
-\begin{equation*}
-  E_{out}(G) \cdot |X| = \lvert \bigcup_{p \in P} W_p \rvert = \sum_{p \in P} |W_p| - \sum_{p_1, p_2 \in P; p_1 \ne p_2} |W_{p_1} \cap W_{p_2}| + \sum_{p_1, p_2, p_3 \in P; p_1 \ne p_2 \ne p_3 \ne p_1} |W_{p_1} \cap W_{p_2} \cup W_{p_3}| \cdots
-\end{equation*}
+\begin{align*}
+  &E_{out}(G) \cdot |X| \\
+  =& \lvert \bigcup_{p \in P} W_p \rvert \\
+  =& \sum_{p \in P} |W_p| - \sum_{p_1, p_2 \in P; p_1 \ne p_2} |W_{p_1} \cap W_{p_2}| + \sum_{p_1, p_2, p_3 \in P; p_1 \ne p_2 \ne p_3 \ne p_1} |W_{p_1} \cap W_{p_2} \cup W_{p_3}| \cdots
+\end{align*}
 
 Since if $\{ W_p | p \in P\}$ are not pairwise disjoint,
 
@@ -175,5 +177,96 @@ Therefore,
   E_{out}(G) \leq \frac{2}{K + 1} \sum_{k=1}^{K} e_k
 \end{equation*}
 
+\section*{4}
+
+To solve
+
+\begin{equation*}
+  \min_{\eta} \sum_{n=1}^N ((y_n - s_n) - \eta g_1(x_n))^2  =   \min_{\eta} \sum_{n=1}^N (y_n - 2 \eta )^2
+\end{equation*}
+
+Let
+
+\begin{align*}
+  \frac{\partial}{\partial \eta} \sum_{n=1}^N (y_n - 2 \eta)^2 
+  =& \sum_{n=1}^N -4 (y_n - 2 \eta) = 0
+\end{align*}
+
+Get
+
+\begin{equation*}
+  \alpha_1 = \eta = \frac{\sum_{n=1}^N y_n}{2N} 
+\end{equation*}
+
+Thus
+
+\begin{equation*}
+  s_n = \alpha_1 g_1(x_n) = \frac{\sum_{n=1}^N y_n}{2N} \cdot 2 = \frac{\sum_{n=1}^N y_n}{N}
+\end{equation*}
+
+\section*{5}
+
+
+\section*{6}
+
+A general polynomial regression problem is to find an optiomal $w$ that minimizes
+
+\begin{equation*}
+  \lVert y - g(z) \rVert^2 = \lVert y - w^T z \rVert^2
+\end{equation*}
+
+where
+
+\begin{equation*}
+z_n = (1, x_n, x_n^2, x_n^3, \cdots, x_n^k)
+\end{equation*}
+
+for a $k$-degree polynomial gregression. ($x_n^k$ is elementwise power of $x_n$.)
+
+So the optimal $w$ satisfies
+
+\begin{equation*}
+  \frac{\partial}{\partial w} \lVert y - w^T z \rVert^2 = 2z^T(y - w^T z) = 0
+\end{equation*}
+
+where $w^Tz = g(z)$ and since the first row of $z^T$ is an all $1$ vector, therefore we have
+
+\begin{equation*}
+  1^T(y - g(z)) = 1^T y - 1^T g(z) = 0
+\end{equation*}
+
+That is
+
+\begin{equation*}
+  \sum_{n=1}^N y_n = \sum_{n=1}^N g(x_n)
+\end{equation*}
+
+So to find minimal $\eta$, let
+
+\begin{equation*}
+  \frac{\partial}{\partial \eta} \sum_{n=1}^{N} (y_n - \eta g(x_n))^2 = \sum_{n=1}^N -2 g(x_n) (y_n - \eta g(x_n)) = 0
+\end{equation*}
+
+Get
+
+\begin{equation*}
+  \eta = \frac{\sum_{n=1}^N y_n}{\sum_{n=1}^N g(x_n)} = 1
+\end{equation*}
+
+\section*{7}
+
+Let the optimal $w$ in $g_1, g_2$ be $w_1, w_2$ respectively. Then finding the optimal $g_2$ is to find the optimal $w_2$ that minimize
+
+\begin{equation*}
+  \lVert y - s - \eta g_t(x) \rVert^2 = \lVert y - w_1^T z - \eta w_2^T z \rVert^2 = \lVert y - (w_1^T +  \eta w_2^T) z \rVert^2
+\end{equation*}
+
+where $z$ is defined as in problem 6. But we know that $w_1$ is the optimal solution that minimizes 
+
+\begin{equation*}
+  \lVert y - w_1^T z \rVert^2
+\end{equation*}
+
+Thus $w_2 = 0$, and therefore $g_2(x) = 0$
 
 \end{document}
