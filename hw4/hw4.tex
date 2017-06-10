@@ -319,6 +319,83 @@ And if any $x_i = 1$, say $x_k = 1$
 \end{align*}
 
 
+\section*{10}
+
+For $l \geq 2$, $0 \leq i \leq d^{(l - 1)}$, $1 \leq j \leq d^{(l)}$:
+
+\begin{align*}
+  \frac{\partial e_n}{\partial w_{ij}^{(l)}}
+  =& \delta^{(l)}_j \cdot (x_{i}^{(l - 1)})  \\
+  =& \delta^{(l)}_j \cdot \tanh(\sum_k w_{ki}^{(l-1)} x_k^{(l - 2)}) \\
+  =& 0
+\end{align*}
+
+since $w_{ij} = 0$.
+
+
+\section*{11}
+
+For all $j$ that satisfy $1 \leq j < d^{(1)}$,
+
+
+\begin{equation*}
+    s^{(1)}_j
+    = \sum_{i=0}^{d^{(0)}} w_{ij}^{(1)} x_i^{(0)}
+    = \sum_{i=0}^{d^{(0)}}  x_i^{(0)}
+    = \sum_{i=0}^{d^{(0)}} w_{i(j + 1)}^{(1)} x_i^{(0)}
+    = s^{(1)}_{j+1} 
+\end{equation*}
+
+implies if $w_{j1}^{(2)} = w_{(j + 1)1}^{(2)}$ (which holds at the start)
+
+\begin{equation*}
+  \delta_j^{(1)}
+  = \delta_1^{(2)} w_{j1}^{(2)} \tanh'(s_j^{(1)})
+  = \delta_1^{(2)} w_{(j + 1)1}^{(2)} \tanh'(s_{j + 1}^{(1)})
+  = \delta_{j + 1}^{(1)} 
+\end{equation*}
+
+thus
+
+\begin{equation*}
+  \frac{\partial e_n}{\partial w_{ij}^{(1)}}
+  = \delta_j^{(1)} \cdot x_i^{(0)} 
+  = \delta_{(j + 1)}^{(1)} \cdot x_i^{(0)} 
+  = \frac{\partial e_n}{\partial w_{i(j + 1)}^{(1)}}
+\end{equation*}
+
+That is, after one update of weights,
+
+\begin{equation*}
+  w_{ij}^{(1)} = w_{i(j + 1)}^{(1)}
+\end{equation*}
+
+
+And thus
+
+\begin{equation*}
+s^{(1)}_j = s^{(1)}_{j + 1}
+\end{equation*}
+
+also holds after update, which implies
+
+\begin{equation*}
+  \frac{\partial e_n}{\partial w_{j1}^{(2)}}
+  = \frac{\partial e_n}{\partial s_1^{(2)}} \cdot x_j^{(1)}
+  = \frac{\partial e_n}{\partial s_1^{(2)}} \cdot \tanh(s^{(1)}_{(j)})
+  = \frac{\partial e_n}{\partial s_1^{(2)}} \cdot \tanh(s^{(1)}_{(j+1)})
+  = \frac{\partial e_n}{\partial s_1^{(2)}} \cdot x_{(j+1)}^{(1)}
+  = \frac{\partial e_n}{\partial w_{(j + 1)1}^{(2)}}
+\end{equation*}
+
+Thus after update of weights with gradient descent,
+
+\begin{equation*}
+  w_{(j)1}^{(2)} = w_{(j + 1)1}^{(2)}
+\end{equation*}
+
+still holds. So previous assumption that $w_{j1}^{(2)} = w_{(j + 1)1}^{(2)}$ holds after update. Therefore, by mathematical induction, equations above, including $w_{ij}^{(1)} = w_{i(j + 1)}^{(1)}$, hold throughout the training process.
+
 \section*{12}
 
 \begin{figure}[H]
