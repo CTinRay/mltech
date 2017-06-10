@@ -269,6 +269,34 @@ where $z$ is defined as in problem 6. But we know that $w_1$ is the optimal solu
 
 Thus $w_2 = 0$, and therefore $g_2(x) = 0$
 
+\section*{8}
+
+\begin{equation*}
+w_i =
+\begin{cases}
+  1 & i \ne 0 \\
+  d - 1 & i = 0
+\end{cases}
+\end{equation*}
+
+then $g_A$ is equivalent to OR since if $x_1 = x_2 = x_3 = \cdots = x_d = -1$,
+
+\begin{equation*}
+  g_A(x_1, x_2, x_3, \cdots, x_d) = \mathrm{sign}(\sum_{i=1}^d w_i x_i + w_0) = \mathrm{sign}(-d + d - 1) = -1 = \mathrm{OR}(x_1, x_2, x_3, \cdots, x_d)
+\end{equation*}
+
+And if any $x_i = 1$, say $x_k = 1$
+
+\begin{align*}
+  g_A(x_1, x_2, x_3, \cdots, x_d)
+  =& \mathrm{sign}(\sum_{i=1}^d w_i x_i + w_0) \\
+  =& \mathrm{sign}(\sum_{i=1; i \ne k}^d w_i x_i + w_k x_k + w_0) \\
+  \geq& \mathrm{sign}(-(d - 1) + 1 + d - 1) \\
+  =& +1 = \mathrm{OR}(x_1, x_2, x_3, \cdots, x_d) \\
+  \therefore& g_A(x_1, x_2, x_3, \cdots, x_d) = \mathrm{OR}(x_1, x_2, x_3, \cdots, x_d)
+\end{align*}
+
+
 \section*{12}
 
 \begin{figure}[H]
