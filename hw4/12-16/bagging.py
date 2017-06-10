@@ -21,9 +21,12 @@ class Bagging:
             sample_ys = y[rand_inds]
             self.estimators[i].fit(sample_xs, sample_ys)
 
-    def predict(self, X):
+    def predict(self, X, n_estimators=None):
+        if n_estimators is None:
+            n_estimators = self.n_estimators
+
         vote = np.zeros(X.shape[0])
-        for i in range(self.n_estimators):
+        for i in range(n_estimators):
             vote += self.estimators[i].predict(X)
 
         ys = np.where(vote > 0, 1, -1)

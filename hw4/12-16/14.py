@@ -12,8 +12,8 @@ def main():
     parser = argparse.ArgumentParser(description='MLT HW4 13')
     parser.add_argument('train', type=str, help='train.csv')
     parser.add_argument('test', type=str, help='train.csv')
-    parser.add_argument('--plot', type=str, help='ein.png',
-                        default='ein.png')
+    parser.add_argument('--plot', type=str, help='eout.png',
+                        default='tree-eout.png')
     parser.add_argument('--n_trees', type=int, help='number of trees',
                         default=10)
     args = parser.parse_args()
@@ -27,17 +27,17 @@ def main():
     test['y_'] = classifier.predict(test['x'])
 
     e_ins = []
-    vote = np.zeros(train['x'].shape[0])
+    vote = np.zeros(test['x'].shape[0])
     for i in range(args.n_trees):
-        vote += classifier.forest.estimators[i].predict(train['x'])
+        vote += classifier.forest.estimators[i].predict(test['x'])
         y_ = np.where(vote > 0, 1, -1)
-        err = 1 - accuracy(train['y'], y_)
+        err = 1 - accuracy(test['y'], y_)
         e_ins.append(err)
 
     plt.figure(1)
     plt.plot(np.arange(args.n_trees), e_ins)
     plt.xlabel('First n trees')
-    plt.ylabel('$E_{in}$')
+    plt.ylabel('$E_{out}$')
     plt.savefig(args.plot, dpi=400)
 
     print('Train Error =', 1 - accuracy(train['y'], train['y_']))

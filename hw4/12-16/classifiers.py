@@ -111,6 +111,7 @@ class DecisionTree:
     def fit(self, X, y, valid=None):
         self.root = self._make_tree(X, y)
 
+    @jit
     def predict(self, X):
         y = np.zeros(X.shape[0])
         for i in range(X.shape[0]):
@@ -174,7 +175,4 @@ class RandomForest:
         self.forest.fit(X, y)
 
     def predict(self, X, n_trees=None):
-        if n_trees is None:
-            n_trees = self.n_estimators
-
-        return self.forest.predict(X)
+        return self.forest.predict(X, n_trees)
