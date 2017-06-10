@@ -206,6 +206,28 @@ Thus
 
 \section*{5}
 
+Let $s_n'$ be the value of $s_n$ before updated. Then the optimal $\eta$ is the root of the derivative
+
+\begin{equation*}
+  \frac{\mathrm{d}}{\mathrm{d} \eta} \frac{1}{N} \sum_{n=1}^N ((y_n - s_n') - \eta g_t(x_n))^2 =
+  \sum_{n=1}^N 2 g_t(x_n) (y_n - s_n' - \eta g_t(x_n)) = 0
+\end{equation*}
+
+So we get
+
+\begin{equation*}
+  \alpha_t = \eta = \frac{\sum_{n=1}^N g_t(x_n)(y_n - s_n')}{\sum_{n=1}^N g_t^2 (x_n)}
+\end{equation*}
+
+Then
+
+\begin{align*}
+   & \sum_{n=1}^N s_n g_t(x_n) \\
+  =& \sum_{n=1}^N (s_n' + \alpha_t g_t(x_n)) g_t(x_n) \\
+  =& \sum_{n=1}^N s_n' g_t(x_n) + \alpha_t \sum_{n=1}^N g_t^2(x_n) \\
+  =& \sum_{n=1}^N s_n' g_t(x_n) + \frac{\sum_{n=1}^N g_t(x_n)(y_n - s_n')}{\sum_{n=1}^N g_t^2 (x_n)} \sum_{n=1}^N g_t^2(x_n) \\
+  =& \sum_{n=1}^N g_t(x_n) y_n
+\end{align*}
 
 \section*{6}
 
