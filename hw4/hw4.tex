@@ -318,6 +318,26 @@ And if any $x_i = 1$, say $x_k = 1$
   \therefore& g_A(x_1, x_2, x_3, \cdots, x_d) = \mathrm{OR}(x_1, x_2, x_3, \cdots, x_d)
 \end{align*}
 
+\section*{9}
+
+First layer is of 5 neuron:
+
+\begin{align*}
+  & g_1(x) = \mathrm{sign} \left( \sum_{i=1}^5 x_i + 4 \right) 
+  && g_2(x) = \mathrm{sign} \left( \sum_{i=1}^5 x_i + 2 \right) \\  
+  & g_3(x) = \mathrm{sign} \left( \sum_{i=1}^5 x_i + 0 \right) 
+  && g_4(x) = \mathrm{sign} \left( \sum_{i=1}^5 x_i - 2 \right) \\
+  & g_5(x) = \mathrm{sign} \left( \sum_{i=1}^5 x_i - 4 \right) 
+\end{align*}
+
+and the output layer is of neuron
+
+\begin{align*}
+  g_6(x) = \mathrm{sign} \left( - \sum_{i=1}^5 (-1)^i x_i \right)
+\end{align*}
+
+The neurons, $g_1, g_2, g_3, g_4, g_5$, are activated only when number of positive input is greater or equal to $1, 2, 3, 4, 5$ respectively (, wihch can be verify easily). So if there are $k$ positive inputs, only neurons $g_i$ for $i \leq k$ are avtivated. And the output layer ensure that it is only activated when only neuron $\{ g_i | i \leq k, \}$, where $k$ is odd, are activated (, which can also be verified easily). In conclusion, the output layer only output 1 when number of positive inputs is odd.
+
 
 \section*{10}
 
