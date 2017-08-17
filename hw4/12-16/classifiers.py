@@ -3,6 +3,8 @@ from math import inf
 from copy import deepcopy
 import numpy as np
 import sys
+from bagging import Bagging
+from numba import jit
 
 
 class DecisionStump:
@@ -22,6 +24,7 @@ class DecisionStump:
         self.loss = self._gini
         pass
 
+    @jit
     def fit(self, X, y):
         sorted_indices = []
         n_features = X.shape[1]
@@ -82,6 +85,7 @@ class DecisionTree:
         self.base_estimator = DecisionStump()
         return
 
+    @jit
     def _make_tree(self, X, y):
         node = {}
         node['classifier'] = deepcopy(self.base_estimator)
@@ -107,6 +111,7 @@ class DecisionTree:
     def fit(self, X, y, valid=None):
         self.root = self._make_tree(X, y)
 
+    @jit
     def predict(self, X):
         y = np.zeros(X.shape[0])
         for i in range(X.shape[0]):
@@ -157,3 +162,17 @@ class DecisionTree:
             f.write('node [shape=box] ;')
             plot_node(f, self.root, 1)
             f.write('}')
+
+
+class RandomForest:
+
+    def __init__(self, n_estimators=20):
+        self.n_estimators = n_estimators
+        self.forest = Bagging(base_estimator=DecisionTree(),
+                              n_estimators=self.n_estimators)
+
+    def fit(self, X, y):
+        self.forest.fit(X, y)
+
+    def predict(self, X, n_trees=None):
+        return self.forest.predict(X, n_trees)

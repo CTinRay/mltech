@@ -1,0 +1,468 @@
+\documentclass[fleqn,a4paper,12pt]{article}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+
+
+
+\title{Machine Learning Techniques Homework 4}
+\date{}
+
+\setcounter{section}{3}
+
+\usepackage{listings}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+
+
+\usepackage{mathspec}
+\setmainfont{Noto Serif CJK TC}
+% \setmathsfont(Digits,Latin,Greek)[Numbers={Lining,Proportional}]{DejaVu Math TeX Gyre}
+\newfontfamily\ZhFont{Noto Serif CJK TC}
+\newfontfamily\SmallFont[Scale=0.8]{Droid Sans}
+% \newfontfamily\SmallSmallFont[Scale=0.7]{Noto Serif CJK}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{B03902072\ZhFont{江廷睿}}
+\lhead{Machine Learning Techniques Homework 4}
+\rfoot{\thepage / \pageref{LastPage}}
+
+\usepackage{parskip}
+
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+
+\section*{1}
+
+The probability that an example is not sampled by one sampling is $1 - \frac{1}{N}$. Since $pN$ examples are sampled out, the probability of an example is not sampled at all is
+
+\begin{equation*}
+  (1 - \frac{1}{N})^{pN} = ((1 - \frac{1}{N})^{N})^{p} = (e^{-1})^{p} = e^{-p}
+\end{equation*}
+
+Thus, approximately $e^{-p} N$ examples will not be sampled at all.
+
+\section*{2}
+
+Minimal $E_{in} = 0$. Since to achieve no prediction error, only two of the three tree predicting correctly is required. Let the test data set be $X$, and
+
+\begin{equation*}
+  \begin{cases}
+    X_1 = \{ x \in X | \text{ $g_1(x)$ is incorrect} \} \\
+    X_2 = \{ x \in X | \text{ $g_2(x)$ is incorrect} \} \\
+    X_3 = \{ x \in X | \text{ $g_3(x)$ is incorrect} \} \\
+  \end{cases}
+\end{equation*}
+
+since $E_{out}(g_1) + E_{out}(g_2) + E_{out}(g_3) \le 1$, it is possible that $X_1, X_2, X_3$ are pairwaise disjoint. So if $X_1, X_2, X_3$ are pairwise disjoint, for all $x \in X$, if $x \in X_k$, $x \notin X_{i}$ for $i \in \{1, 2, 3\} \\k$. It implies that for any $x \in X$, at least two of $g_1, g_2, g_3$ will predict correctly. Therefore, $E_{in} = 0$ is attained.
+
+Maximun $E_{out} = 0.375$, which is achieveable only if $X_1 \cup X_2 \cup X_3 = \phi$ to maximize
+
+\begin{equation*}
+  E_{out} = \frac{|(X_1 \cap X_2) \cup (X_2 \cap X_3) \cup (X_1 \cap X_3)|}{|X|}
+\end{equation*}
+
+And also since an error prediction on $x$ requires two $g$ that predict incorrectly, thus the constraint becomes
+
+\begin{equation*}
+  \begin{cases}
+    X_3 \subset X_1 \cup X_2 \\
+    X_3 \cap (X_1 \cap X_2) = \phi 
+  \end{cases}
+\end{equation*}
+
+So the $E_{out}(G) = (|X_3| + |X_1 \cap X_2|) / |X|$ where $|X_3| = 0.35 |X|$, and
+
+\begin{equation*}
+  \begin{aligned}
+    & \text{maximize} && |X_1 \cap X_2| \\
+    & \text{subject to} && 
+    \begin{cases}
+      X_3 \subset X_1 \cup X_2 \\
+      X_3 \cap (X_1 \cap X_2) = \phi 
+    \end{cases}
+  \end{aligned}
+\end{equation*}
+
+is to
+
+\begin{equation*}
+  \begin{aligned}
+    & \text{maximize} && |X_4| \\
+    & \text{subject to} && 
+    \begin{cases}
+      X_4 \subset X_1, X_2 \\
+      X_3 \subset (X_1 \setminus X_4) \cup (X_2 \setminus X_4) \\
+      X_3 \cap X_4 = \phi 
+    \end{cases}
+  \end{aligned}
+\end{equation*}
+
+that is 
+
+\begin{equation*}
+  \begin{aligned}
+    & \text{maximize} && |X_4| \\
+    & \text{subject to} && 
+    \begin{cases}
+      |X_3| \leq (|X_1| - |X_4|)  + (|X_2| - |X_4|) \\
+    \end{cases}
+  \end{aligned}
+\end{equation*}
+
+we get the maximum $|X_4| = 0.025$. Thus, maximum $E_{out}(G) = 0.35 + 0.025 = 0.375$.
+
+\section*{3}
+
+Let $X$ be the test example set, and
+
+\begin{equation*}
+  X_i = \{x \in X | \text{$g_i(x)$ is incorrect} \}
+\end{equation*}
+
+Let
+
+\begin{equation*}
+  W_p = \bigcap_{i \in p} X_i
+\end{equation*}
+
+where $p \in P$ and
+
+\begin{equation*}
+  P = \{ p \subset \{1, 2, 3, \cdots, K\} | |p| = \frac{K + 1}{2} \}
+\end{equation*}
+
+So for $x \in W_p$, $x$ is predicted incorrectly by $\frac{K + 1}{2}$ hypothesises $g$s, and thus predicted incorrectly by $G$. Therefore,
+
+\begin{align*}
+  &E_{out}(G) \cdot |X| \\
+  =& \lvert \bigcup_{p \in P} W_p \rvert \\
+  =& \sum_{p \in P} |W_p| - \sum_{p_1, p_2 \in P; p_1 \ne p_2} |W_{p_1} \cap W_{p_2}| + \sum_{p_1, p_2, p_3 \in P; p_1 \ne p_2 \ne p_3 \ne p_1} |W_{p_1} \cap W_{p_2} \cup W_{p_3}| \cdots
+\end{align*}
+
+Since if $\{ W_p | p \in P\}$ are not pairwise disjoint,
+
+\begin{equation*}
+- \sum_{p_1, p_2 \in P; p_1 \ne p_2} |W_{p_1} \cap W_{p_2}| + \sum_{p_1, p_2, p_3 \in P; p_1 \ne p_2 \ne p_3 \ne p_1} |W_{p_1} \cap W_{p_2} \cup W_{p_3}| \cdots < 0
+\end{equation*}
+
+$E_{out}(G) \cdot |X|$ is upper bounded
+
+\begin{equation*}
+  E_{out}(G) \cdot |X| = \lvert \bigcup_{p \in P} W_p \rvert \leq \sum_{p \in P} |W_p| 
+\end{equation*}
+
+And we know that when $\{ W_p | p \in P\}$ are pairwise disjoint
+
+\begin{align*}
+  \sum_{p \in P} |W_p|
+  &= \lvert \bigcup_{p \in P} W_p \rvert \\
+  &= \lvert \{ x \in W_p \text{ for some $p$ } \} \rvert \\
+  &= \lvert \{ x | \text{$x$ in $\frac{K + 1}{2}$ sets ($X_i, \forall i \in p$) that contain $x$} \} \rvert \\
+  &= \frac{2}{K + 1} \sum_{k=1}^{K} |X_k| \\
+  &= \frac{2}{K + 1} \sum_{k=1}^{K} |X| e_k
+\end{align*}
+
+
+Therefore,
+
+\begin{equation*}
+  E_{out}(G) \leq \frac{2}{K + 1} \sum_{k=1}^{K} e_k
+\end{equation*}
+
+\section*{4}
+
+To solve
+
+\begin{equation*}
+  \min_{\eta} \sum_{n=1}^N ((y_n - s_n) - \eta g_1(x_n))^2  =   \min_{\eta} \sum_{n=1}^N (y_n - 2 \eta )^2
+\end{equation*}
+
+Let
+
+\begin{align*}
+  \frac{\partial}{\partial \eta} \sum_{n=1}^N (y_n - 2 \eta)^2 
+  =& \sum_{n=1}^N -4 (y_n - 2 \eta) = 0
+\end{align*}
+
+Get
+
+\begin{equation*}
+  \alpha_1 = \eta = \frac{\sum_{n=1}^N y_n}{2N} 
+\end{equation*}
+
+Thus
+
+\begin{equation*}
+  s_n = \alpha_1 g_1(x_n) = \frac{\sum_{n=1}^N y_n}{2N} \cdot 2 = \frac{\sum_{n=1}^N y_n}{N}
+\end{equation*}
+
+\section*{5}
+
+Let $s_n'$ be the value of $s_n$ before updated. Then the optimal $\eta$ is the root of the derivative
+
+\begin{equation*}
+  \frac{\mathrm{d}}{\mathrm{d} \eta} \frac{1}{N} \sum_{n=1}^N ((y_n - s_n') - \eta g_t(x_n))^2 =
+  \sum_{n=1}^N 2 g_t(x_n) (y_n - s_n' - \eta g_t(x_n)) = 0
+\end{equation*}
+
+So we get
+
+\begin{equation*}
+  \alpha_t = \eta = \frac{\sum_{n=1}^N g_t(x_n)(y_n - s_n')}{\sum_{n=1}^N g_t^2 (x_n)}
+\end{equation*}
+
+Then
+
+\begin{align*}
+   & \sum_{n=1}^N s_n g_t(x_n) \\
+  =& \sum_{n=1}^N (s_n' + \alpha_t g_t(x_n)) g_t(x_n) \\
+  =& \sum_{n=1}^N s_n' g_t(x_n) + \alpha_t \sum_{n=1}^N g_t^2(x_n) \\
+  =& \sum_{n=1}^N s_n' g_t(x_n) + \frac{\sum_{n=1}^N g_t(x_n)(y_n - s_n')}{\sum_{n=1}^N g_t^2 (x_n)} \sum_{n=1}^N g_t^2(x_n) \\
+  =& \sum_{n=1}^N g_t(x_n) y_n
+\end{align*}
+
+\section*{6}
+
+A general polynomial regression problem is to find an optiomal $w$ that minimizes
+
+\begin{equation*}
+  \lVert y - g(z) \rVert^2 = \lVert y - w^T z \rVert^2
+\end{equation*}
+
+where
+
+\begin{equation*}
+z_n = (1, x_n, x_n^2, x_n^3, \cdots, x_n^k)
+\end{equation*}
+
+for a $k$-degree polynomial gregression. ($x_n^k$ is elementwise power of $x_n$.)
+
+So the optimal $w$ satisfies
+
+\begin{equation*}
+  \frac{\partial}{\partial w} \lVert y - w^T z \rVert^2 = 2z^T(y - w^T z) = 0
+\end{equation*}
+
+where $w^Tz = g(z)$ and since the first row of $z^T$ is an all $1$ vector, therefore we have
+
+\begin{equation*}
+  1^T(y - g(z)) = 1^T y - 1^T g(z) = 0
+\end{equation*}
+
+That is
+
+\begin{equation*}
+  \sum_{n=1}^N y_n = \sum_{n=1}^N g(x_n)
+\end{equation*}
+
+So to find minimal $\eta$, let
+
+\begin{equation*}
+  \frac{\partial}{\partial \eta} \sum_{n=1}^{N} (y_n - \eta g(x_n))^2 = \sum_{n=1}^N -2 g(x_n) (y_n - \eta g(x_n)) = 0
+\end{equation*}
+
+Get
+
+\begin{equation*}
+  \eta = \frac{\sum_{n=1}^N y_n}{\sum_{n=1}^N g(x_n)} = 1
+\end{equation*}
+
+\section*{7}
+
+Let the optimal $w$ in $g_1, g_2$ be $w_1, w_2$ respectively. Then finding the optimal $g_2$ is to find the optimal $w_2$ that minimize
+
+\begin{equation*}
+  \lVert y - s - \eta g_t(x) \rVert^2 = \lVert y - w_1^T z - \eta w_2^T z \rVert^2 = \lVert y - (w_1^T +  \eta w_2^T) z \rVert^2
+\end{equation*}
+
+where $z$ is defined as in problem 6. But we know that $w_1$ is the optimal solution that minimizes 
+
+\begin{equation*}
+  \lVert y - w_1^T z \rVert^2
+\end{equation*}
+
+Thus $w_2 = 0$, and therefore $g_2(x) = 0$
+
+\section*{8}
+
+\begin{equation*}
+w_i =
+\begin{cases}
+  1 & i \ne 0 \\
+  d - 1 & i = 0
+\end{cases}
+\end{equation*}
+
+then $g_A$ is equivalent to OR since if $x_1 = x_2 = x_3 = \cdots = x_d = -1$,
+
+\begin{equation*}
+  g_A(x_1, x_2, x_3, \cdots, x_d) = \mathrm{sign}(\sum_{i=1}^d w_i x_i + w_0) = \mathrm{sign}(-d + d - 1) = -1 = \mathrm{OR}(x_1, x_2, x_3, \cdots, x_d)
+\end{equation*}
+
+And if any $x_i = 1$, say $x_k = 1$
+
+\begin{align*}
+  g_A(x_1, x_2, x_3, \cdots, x_d)
+  =& \mathrm{sign}(\sum_{i=1}^d w_i x_i + w_0) \\
+  =& \mathrm{sign}(\sum_{i=1; i \ne k}^d w_i x_i + w_k x_k + w_0) \\
+  \geq& \mathrm{sign}(-(d - 1) + 1 + d - 1) \\
+  =& +1 = \mathrm{OR}(x_1, x_2, x_3, \cdots, x_d) \\
+  \therefore& g_A(x_1, x_2, x_3, \cdots, x_d) = \mathrm{OR}(x_1, x_2, x_3, \cdots, x_d)
+\end{align*}
+
+\section*{9}
+
+First layer is of 5 neuron:
+
+\begin{align*}
+  & g_1(x) = \mathrm{sign} \left( \sum_{i=1}^5 x_i + 4 \right) 
+  && g_2(x) = \mathrm{sign} \left( \sum_{i=1}^5 x_i + 2 \right) \\  
+  & g_3(x) = \mathrm{sign} \left( \sum_{i=1}^5 x_i + 0 \right) 
+  && g_4(x) = \mathrm{sign} \left( \sum_{i=1}^5 x_i - 2 \right) \\
+  & g_5(x) = \mathrm{sign} \left( \sum_{i=1}^5 x_i - 4 \right) 
+\end{align*}
+
+and the output layer is of neuron
+
+\begin{align*}
+  g_6(x) = \mathrm{sign} \left( - \sum_{i=1}^5 (-1)^i x_i \right)
+\end{align*}
+
+The neurons, $g_1, g_2, g_3, g_4, g_5$, are activated only when number of positive input is greater or equal to $1, 2, 3, 4, 5$ respectively (, wihch can be verify easily). So if there are $k$ positive inputs, only neurons $g_i$ for $i \leq k$ are avtivated. And the output layer ensure that it is only activated when only neuron $\{ g_i | i \leq k, \}$, where $k$ is odd, are activated (, which can also be verified easily). In conclusion, the output layer only output 1 when number of positive inputs is odd.
+
+
+\section*{10}
+
+For $l \geq 2$, $0 \leq i \leq d^{(l - 1)}$, $1 \leq j \leq d^{(l)}$:
+
+\begin{align*}
+  \frac{\partial e_n}{\partial w_{ij}^{(l)}}
+  =& \delta^{(l)}_j \cdot (x_{i}^{(l - 1)})  \\
+  =& \delta^{(l)}_j \cdot \tanh(\sum_k w_{ki}^{(l-1)} x_k^{(l - 2)}) \\
+  =& 0
+\end{align*}
+
+since $w_{ij} = 0$.
+
+
+\section*{11}
+
+For all $j$ that satisfy $1 \leq j < d^{(1)}$,
+
+
+\begin{equation*}
+    s^{(1)}_j
+    = \sum_{i=0}^{d^{(0)}} w_{ij}^{(1)} x_i^{(0)}
+    = \sum_{i=0}^{d^{(0)}}  x_i^{(0)}
+    = \sum_{i=0}^{d^{(0)}} w_{i(j + 1)}^{(1)} x_i^{(0)}
+    = s^{(1)}_{j+1} 
+\end{equation*}
+
+implies if $w_{j1}^{(2)} = w_{(j + 1)1}^{(2)}$ (which holds at the start)
+
+\begin{equation*}
+  \delta_j^{(1)}
+  = \delta_1^{(2)} w_{j1}^{(2)} \tanh'(s_j^{(1)})
+  = \delta_1^{(2)} w_{(j + 1)1}^{(2)} \tanh'(s_{j + 1}^{(1)})
+  = \delta_{j + 1}^{(1)} 
+\end{equation*}
+
+thus
+
+\begin{equation*}
+  \frac{\partial e_n}{\partial w_{ij}^{(1)}}
+  = \delta_j^{(1)} \cdot x_i^{(0)} 
+  = \delta_{(j + 1)}^{(1)} \cdot x_i^{(0)} 
+  = \frac{\partial e_n}{\partial w_{i(j + 1)}^{(1)}}
+\end{equation*}
+
+That is, after one update of weights,
+
+\begin{equation*}
+  w_{ij}^{(1)} = w_{i(j + 1)}^{(1)}
+\end{equation*}
+
+
+And thus
+
+\begin{equation*}
+s^{(1)}_j = s^{(1)}_{j + 1}
+\end{equation*}
+
+also holds after update, which implies
+
+\begin{equation*}
+  \frac{\partial e_n}{\partial w_{j1}^{(2)}}
+  = \frac{\partial e_n}{\partial s_1^{(2)}} \cdot x_j^{(1)}
+  = \frac{\partial e_n}{\partial s_1^{(2)}} \cdot \tanh(s^{(1)}_{(j)})
+  = \frac{\partial e_n}{\partial s_1^{(2)}} \cdot \tanh(s^{(1)}_{(j+1)})
+  = \frac{\partial e_n}{\partial s_1^{(2)}} \cdot x_{(j+1)}^{(1)}
+  = \frac{\partial e_n}{\partial w_{(j + 1)1}^{(2)}}
+\end{equation*}
+
+Thus after update of weights with gradient descent,
+
+\begin{equation*}
+  w_{(j)1}^{(2)} = w_{(j + 1)1}^{(2)}
+\end{equation*}
+
+still holds. So previous assumption that $w_{j1}^{(2)} = w_{(j + 1)1}^{(2)}$ holds after update. Therefore, by mathematical induction, equations above, including $w_{ij}^{(1)} = w_{i(j + 1)}^{(1)}$, hold throughout the training process.
+
+\section*{12}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{hist-ein.png}
+\caption{$E_{in}$ over 30000 trees}
+\label{fig:hist-ein}
+\end{figure}
+
+\section*{13}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{tree-ein.png}
+\caption{$E_{in}$ over 30000 trees}
+\label{fig:tree-ein}
+\end{figure}
+
+\section*{14}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{tree-eout.png}
+\caption{$E_{out}$ over 30000 trees}
+\label{fig:tree-eout}
+\end{figure}
+
+In figure \ref{fig:tree-ein}, $E_{in}$ goes to $0$ in first few trees, and keeps $0$ until the end. In contrast, in figure \ref{fig:tree-eout}, $E_{out}$ oscilate in first few thousands of trees, and keeps about $0.08$ until the end, which is higher than that of $E_{in}$.
+
+\section*{15}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{stump-ein.png}
+\caption{$E_{in}$ over 30000 stumps}
+\label{fig:stump-ein}
+\end{figure}
+
+\section*{16}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{stump-eout.png}
+\caption{$E_{out}$ over 30000 stumps}
+\label{fig:stump-eout}
+\end{figure}
+
+Both $E_{in}$ and $E_{out}$ go down drastically in first few stumps. But $E_{in}$ goes down and up in first few thousands of trees, while $E_{out}$ goes up and down for the same interval. And for the following trees, $E_{in}$ is more flat than $E_{out}$, also $E_{in}$ converges at lower value than $E_{out}$.
+
+\end{document}

@@ -105,6 +105,14 @@ Therefore,
 
 where the second equality is because $g_n(x) \ne g_n(x')$ only when $\theta_n$ is between $(x_i, x_i + 1), (x_i + 1, x_i + 2), \cdots, (x'_i - 1, x'_i)$, totally $|x'_i - x_i|$ decision stumps, and trivially, $|\{g | g(x) = g(x')\}| = |\text{decision stumps}| - |\{g | g(x) \ne g(x')\}|$.
 
+To work with continuous input vector, we can first sort $x_1, x_2$ respectively. Then we can replace $(x_1, x_2)$ with $(d_1, d_2)$, where $d_1, d_2$ is the indice of $x_1, x_2$ in the sorted $x_1, x_2$. So 
+
+\begin{equation*}
+  g_n(x)g_n(x') = (-1) \cdot (|d_1 - d_1'| + |d_2 - d_2'|)
+\end{equation*}
+
+
+
 \section*{5}
 
 \begin{align*}
